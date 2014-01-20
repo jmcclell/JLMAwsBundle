@@ -38,7 +38,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('discovery_aws');
+        $rootNode = $treeBuilder->root('jlm_aws');
 
         $rootNode
             ->children()
