@@ -12,16 +12,7 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "~2.1",
-        "symfony/process": "~2.1",
-        "symfony/finder": "~2.1"
-    },
-    "require-dev": {
-        "symfony/validator": "*",
-        "symfony/form": "*",
-        "symfony/class-loader": "*",
-        "symfony/yaml": "*",
-        "symfony/browser-kit": "*"
+        "symfony/framework-bundle": "~2.1"
     },
     "autoload": {
         "psr-0": { "JLM\\AwsBundle": "" }
