@@ -1,4 +1,5 @@
 <?php
+namespace JLM\AwsBundle\Tests;
 
 class RealityTest extends \PHPUnit_Framework_TestCase
 {
