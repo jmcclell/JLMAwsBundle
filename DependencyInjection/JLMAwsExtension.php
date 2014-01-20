@@ -1,6 +1,6 @@
 <?php
 
-namespace Discovery\Bundle\AwsBundle\DependencyInjection;
+namespace JLM\AwsBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -20,7 +20,7 @@ use Aws\Common\Aws;
  */
 class DiscoveryAwsExtension extends Extension
 {
-    const AWS_SERVICE_PREFIX = 'discovery_aws.';
+    const AWS_SERVICE_PREFIX = 'jlm_aws.';
 
     private $awsTranslationTable = array( // AWS config name as value
                 'config' => array(
