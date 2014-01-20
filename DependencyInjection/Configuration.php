@@ -1,6 +1,6 @@
 <?php
 
-namespace Discovery\Bundle\AwsBundle\DependencyInjection;
+namespace JLM\AwsBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
