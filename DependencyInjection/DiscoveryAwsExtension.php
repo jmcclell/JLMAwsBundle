@@ -256,23 +256,22 @@ class DiscoveryAwsExtension extends Extension
             switch ($param) {
                 case 'provider_service':
                 case 'client_service':
-                case 'version_service':
                 case 'backoff_logger':
                         $awsConfig[$aws[$param]] = $this->translateServiceReference($value, $container);
                     break;
                 case 'signature':
                     if (isset($value['version_service'])) {
-                        $awsConfig[$aws[$param]['version_service']] = $value['version_service'];
+                        $awsConfig[$aws[$param]['version_service']] = $this->translateServiceReference($value['version_service'], $container);
                     } else {
                         if (isset($value['version'])) {
                             $awsConfig[$aws[$param]['version']] = $value['version'];
-                        }
-                        if (isset($value['service'])) {
-                            $awsConfig[$aws[$param]['service']] = $value['service'];
-                        }
-                        if (isset($value['region'])) {
-                            $awsConfig[$aws[$param]['region']] = $value['region'];
-                        }
+                        }                        
+                    }
+                    if (isset($value['service'])) {
+                        $awsConfig[$aws[$param]['service']] = $value['service'];
+                    }
+                    if (isset($value['region'])) {
+                        $awsConfig[$aws[$param]['region']] = $value['region'];
                     }
                     break;
                 case 'request_options':
