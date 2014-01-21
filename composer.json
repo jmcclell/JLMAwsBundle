@@ -12,7 +12,8 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "~2.1"
+        "symfony/framework-bundle": "~2.1",
+        "aws/aws-sdk-php": "~2.5"
     },
     "autoload": {
         "psr-0": { "JLM\\AwsBundle": "" }
