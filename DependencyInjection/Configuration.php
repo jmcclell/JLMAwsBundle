@@ -71,14 +71,14 @@ class Configuration implements ConfigurationInterface
                     ->example('YOUR_AWS_SECRET_ACCESS_KEY')
                 ->end()  
                 ->scalarNode('provider_service')
-                    ->info('Service that will provide credentials. Instance of Aws\Common\Credentials\Credentials.')  
+                    ->info('@Name of service that will provide credentials. Servicem ust be instance of Aws\Common\Credentials\Credentials')  
                     ->example('@my_provider_service')
                 ->end()
                 ->scalarNode('cache_key')
                     ->info('Optional custom cache key to use with the credentials')
                 ->end()
                 ->scalarNode('client_service')
-                    ->info('Optional custom Guzzle client interface to use if your credentials require an HTTP request to acquire, sucha s with RefreshableInstanceProfileCredentials. Must be a service reference to an instance of Guzzle\Http\ClientInterface.')            
+                    ->info('@Name of optional custom Guzzle client interface to use if your credentials require an HTTP request to acquire, such as with RefreshableInstanceProfileCredentials. Service must be an instance of Guzzle\Http\ClientInterface')            
                     ->example('@my_guzzle_client')
                 ->end()
             ->end();
@@ -114,7 +114,7 @@ class Configuration implements ConfigurationInterface
                             ->example('v4')
                         ->end()
                         ->scalarNode('version_service')
-                            ->info('Rather than defining the version explicitly, provide a service reference that is an instance of Aws\Common\Signature\SignatureInterface in order to provide the signature version')
+                            ->info('Rather than defining the version explicitly, provide a service @name that is an instance of Aws\Common\Signature\SignatureInterface in order to provide the signature version')
                             ->example('@my_signature_service')
                         ->end()
                         ->scalarNode('service')
@@ -136,6 +136,8 @@ class Configuration implements ConfigurationInterface
         $node = $builder->root('client');
 
         $node
+            ->fixXmlConfig('curl_option')
+            ->fixXmlConfig('command_param')
             ->children()
                 ->scalarNode('ssl_ca')
                     ->info('Set to false to disable SSL. Otherwise, true to use the SDK bundled SSL cert bundle, \'system\' to use the bundle on your system, or a string pointing to the path of a specific cert file or directory of cert files.')
@@ -149,6 +151,9 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('request_options')
                     ->info('Associate array of Guzzle reqeust options. (@see http://docs.guzzlephp.org/en/latest/http-client/client.html#request-options)')
+                    ->fixXmlConfig('header')
+                    ->fixXmlConfig('cookie')
+                    ->fixXmlConfig('param')                    
                     ->children()
                         ->arrayNode('headers')
                             ->info('Associative array of headers to pass with each request')
@@ -272,34 +277,46 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder();
         $node = $builder->root('services');
-        $node = $node->info('Enable and configure the services available in the AWS SDK');
+        $node = $node->info('Enable and configure the services available in the AWS SDK');        
         $children = $node->children();
-
         foreach ($this->availableAwsServices as $service) {
-            $children = $children
-                ->arrayNode($service)
-                    ->useAttributeAsKey('alias')   
-                    ->treatFalseLike(array('default' => false))  
-                    ->treatTrueLike(array('default' => true))
-                    ->treatNullLike(array('default' => true))                                   
-                    ->prototype('array')
-                        ->canBeEnabled()
-                        ->children()
-                            ->scalarNode('alias')
-                                ->info('The alias for this service. Will be used exactly as written as the alias in the AWS service builder and as the Symfony service name suffix.')
-                                ->cannotBeEmpty()                                
+            $children = $children          
+                        ->arrayNode($service)                   
+                            ->useAttributeAsKey('name')  
+                            ->treatFalseLike(array('default' => false))  
+                            ->treatTrueLike(array('default' => true))
+                            ->treatNullLike(array('default' => true))  
+                            ->beforeNormalization() // Fixes quirk with XML config for single, named entries with only TRUE/FALSE/NULL values
+                                ->ifArray()
+                                    ->then(function($v) { 
+                                        if(array_key_exists('name', $v)) {
+                                           return array($v);
+                                        } else {
+                                           return $v;
+                                        } 
+                                    })
+                            ->end()                                 
+                            ->prototype('array')                        
+                                ->canBeEnabled()
+                                ->children()                            
+                                    ->scalarNode('name')
+                                        ->info('The name for this service. Will be used exactly as written as the alias in the AWS service builder and as the Symfony service name suffix, ie: @jlm_aws.{name}. Except for "default" which will automatically use the default service name for the given service type, eg: ec2, cloudwatch, etc.')
+                                        ->cannotBeEmpty()                                
+                                    ->end()
+                                    ->scalarNode('class')
+                                        ->Info('Allows a custom class to be set as the service client.')
+                                    ->end()
+                                    ->scalarNode('extends')
+                                        ->Info('Extend an existing configuration. By default, the "default" for each service type is extended while the "default" extends "default_settings"')
+                                    ->end()
+                                    ->append($this->getCredentialConfigNode())
+                                    ->append($this->getEndpointConfigNode())
+                                    ->append($this->getClientConfigNode())
+                                ->end()
                             ->end()
-                            ->scalarNode('class')
-                                ->Info('Allows a custom class to be set as the service client.')
-                            ->end()
-                            ->append($this->getCredentialConfigNode())
-                            ->append($this->getEndpointConfigNode())
-                            ->append($this->getClientConfigNode())
-                        ->end()
-                    ->end()
-                ->end();
+                        ->end();                
         }
-        $node->end();
+        $children->end();
         return $node;
     }
 }

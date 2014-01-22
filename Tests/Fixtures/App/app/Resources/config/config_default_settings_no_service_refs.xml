@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+>
+    <jlm-aws:config>
+            <jlm-aws:default-settings>
+                <jlm-aws:credentials 
+                        key="MY_KEY"
+                        secret="MY_SECRET"
+                   />
+                <jlm-aws:endpoint
+                    region="us-east-1"
+                    scheme="https"
+
+                 />
+                <jlm-aws:client
+                    ssl-ca="true"
+                 />
+            </jlm-aws:default-settings>
+    </jlm-aws:config>
+</container>
+
+

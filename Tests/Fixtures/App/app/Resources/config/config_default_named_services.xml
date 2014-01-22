@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+>
+    <jlm-aws:config>
+            <jlm-aws:services>
+              <jlm-aws:autoscaling name="my_autoscaling" />              
+              <jlm-aws:cloud-formation name="my_cloud_formation" />
+              <jlm-aws:cloud-front name="my_cloud_front" />
+              <jlm-aws:cloud-front-20120505 name="my_cloud_front_20120505" />
+              <jlm-aws:cloud-search name="my_cloud_search" />
+              <jlm-aws:cloud-trail name="my_cloud_trail" />
+              <jlm-aws:cloud-watch name="my_cloud_watch" />
+              <jlm-aws:data-pipeline name="my_data_pipeline" />
+              <jlm-aws:direct-connect name="my_direct_connect" />
+              <jlm-aws:dynamo-db name="my_dynamo_db" />
+              <jlm-aws:dynamo-db-20111205 name="my_dynamo_db_20111205" />
+              <jlm-aws:ec2 name="my_ec2" />
+              <jlm-aws:elasticache name="my_elasticache" />
+              <jlm-aws:elastic-beanstalk name="my_elastic_beanstalk" />
+              <jlm-aws:elastic-load-balancing name="my_elastic_load_balancing" />
+              <jlm-aws:elastic-transcoder name="my_elastic_transcoder" />
+              <jlm-aws:emr name="my_emr" />
+              <jlm-aws:glacier name="my_glacier" />
+              <jlm-aws:kinesis name="my_kinesis" />
+              <jlm-aws:iam name="my_iam" />
+              <jlm-aws:import-export name="my_import_export" />
+              <jlm-aws:opsworks name="my_opsworks" />
+              <jlm-aws:rds name="my_rds" />
+              <jlm-aws:redshift name="my_redshift" />
+              <jlm-aws:route53 name="my_route53" />
+              <jlm-aws:s3 name="my_s3" />
+              <jlm-aws:sdb name="my_sdb" />
+              <jlm-aws:ses name="my_ses" />
+              <jlm-aws:sns name="my_sns" />
+              <jlm-aws:sqs name="my_sqs" />
+              <jlm-aws:storage-gateway name="my_storage_gateway" />
+              <jlm-aws:sts name="my_sts" />
+              <jlm-aws:support name="my_support" />
+              <jlm-aws:swf name="my_swf" />
+            </jlm-aws:services>
+    </jlm-aws:config>
+</container>
+
+

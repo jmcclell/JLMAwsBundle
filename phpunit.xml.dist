@@ -12,9 +12,21 @@
          bootstrap="./Tests/bootstrap.php"
 >
          
+  <php>
+    <server name="KERNEL_DIR" value="./Tests/Fixtures/App/app" />
+  </php>
     <testsuites>
-        <testsuite name="JLMAwsBundle Test Suite">
+        <testsuite name="JLMAwsBundle Test Suite YML">
             <directory>./Tests</directory>
+            <server name="ENV" value="test_yml"/>
+        </testsuite>
+        <testsuite name="JLMAwsBundle Test Suite XML">
+            <directory>./Tests</directory>
+            <server name="ENV" value="test_xml"/>
+        </testsuite>
+        <testsuite name="JLMAwsBundle Test Suite PHP">
+            <directory>./Tests</directory>
+            <server name="ENV" value="test_php"/>
         </testsuite>
     </testsuites>    
 </phpunit>

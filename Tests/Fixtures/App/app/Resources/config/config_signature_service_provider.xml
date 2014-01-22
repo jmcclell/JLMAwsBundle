@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+>
+    <services>
+        <service id="jlm_aws.signature_provider" class="JLM\AwsBundle\Tests\Fixtures\MockService\SignatureProvider">
+        </service>
+    </services>
+    <jlm-aws:config>
+            <jlm-aws:default-settings>
+                <jlm-aws:endpoint>
+                        <jlm-aws:signature
+                                version="v4"
+                                version_service="@jlm_aws.signature_provider"
+                                service="MY_SERVICE"
+                                region="MY_REGION"
+                            />
+                </jlm-aws:endpoint>
+            </jlm-aws:default-settings>
+    </jlm-aws:config>
+</container>
+
+

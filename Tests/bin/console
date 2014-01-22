@@ -1,0 +1,192 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This script is used to generate test data configuration files
+ * used by the unit tests. Use this to easily update the data and
+ * then create files of each type (YML, XML, and PHP) to be tested
+ * by the unit tests.
+ *
+ * By default, this file will read the config.php from our fixture
+ * used by our test AppKernel and output 4 versions (XML, YML, PHP, INI)
+ * to be used for the config normalization tests. This lets us manage
+ * a single file manually while this script does the rest.
+ *
+ * This script also lets you choose another input file and
+ * another output file, as well as specific output formats.
+ *
+ * This file should only be invoked manually by a developer.
+ */
+
+
+set_time_limit(0);
+
+
+require __DIR__ . '/../bootstrap.php';
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Command\ConfigDumpReferenceCommand;
+
+class ConfigGenerateCommand extends Command
+{
+    protected $configRenderer;
+
+    public function __construct(configRenderer $configRenderer)
+    {
+        parent::__construct();
+        $this->configRenderer = $configRenderer;
+    }
+
+    protected function configure()
+    {
+        $this
+            ->setName('config:generate')
+            ->setDescription('Generates configuration permutations from input file')
+            ->addArgument(
+                'file',
+                InputArgument::OPTIONAL,
+                'File to import config',
+                dirname(__DIR__) . '/Fixtures/App/app/Config/config.php'
+            )
+            ->addArgument(
+               'outputFileName',
+               InputArgument::OPTIONAL,
+               'Filename (without extension) to dump the config to.'
+            )
+            ->addOption(
+                'xml',
+                '',
+                InputOption::VALUE_NONE,
+                'Output XML format. If no format flags are set, all formats will be created.'
+            )
+            ->addOption(
+                'yml',
+                '',
+                InputOption::VALUE_NONE,
+                'Output YML format. If no format flags are set, all formats will be created.'
+            )
+            ->addOption(
+                'php',
+                '',
+                InputOption::VALUE_NONE,
+                'Output PHP format. If no format flags are set, all formats will be created.'
+            );
+
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $source = $input->getArgument('file');
+       
+
+        $output->writeln("Reading config from: $source");
+
+        $formats = array();
+
+        if($input->getOption('xml')) {
+            $formats[] = 'xml';
+        }
+        if($input->getOption('yml')) {
+            $formats[] = 'yml';
+        }
+        if($input->getOption('php')) {
+            $formats[] = 'php';
+        }
+
+        if(empty($formats)) {
+            $formats = array('xml', 'yml', 'php');
+        }
+
+        $output->writeln("Generating config for the following format(s): " . implode(', ' , $formats));
+
+        foreach($formats as $format) {
+            $output = $this->configRenderer->render($input, $format);
+
+            // write output
+        }
+    }
+}
+
+class ConfigRenderer
+{
+    protected $renderingEngines = array();
+
+    public function registerRenderingEngine($format, ConfigRenderingEngine $engine)
+    {
+        $this->renderingEngines[$format] = $engine;
+    }
+
+    public function registerRenderingEngines(array $engines)
+    {
+        foreach ($engines as $format => $engine) {
+            $this->registerRenderingEngine($format, $engine);
+        }
+    }
+
+    public function render($input, $format)
+    {
+        if(!isset($this->renderingEngines[$format])) {
+            throw new \InvalidArgumentException("No rendering engine registered for format: $format");
+        }
+
+        $renderer = $this->renderingEngines[$format];
+        $output = $renderer->render($input);
+
+        return $output;
+    }
+}
+
+abstract class ConfigRenderingEngine
+{
+    abstract public function render($input);
+}
+
+class PHPConfigRenderingEngine extends ConfigRenderingEngine
+{
+    public function render($input)
+    {
+        return $input;
+    }
+}
+
+class YMLConfigRenderingEngine extends ConfigRenderingEngine
+{
+    public function render($input)
+    {
+        return $input;
+    }
+}
+
+class XMLConfigRenderingEngine extends ConfigRenderingEngine
+{
+    public function render($input)
+    {
+        return $input;
+    }
+}
+
+class INIConfigRenderingEngine extends ConfigRenderingEngine
+{
+    public function render($input)
+    {
+        return $input;
+    }
+}
+
+
+$configRenderer = new ConfigRenderer();
+$configRenderer->registerRenderingEngines(array(
+        'php' => new PHPConfigRenderingEngine(),
+        'xml' => new XMLConfigRenderingEngine(),
+        'yml' => new YMLConfigRenderingEngine(),
+        'ini' => new INIConfigRenderingEngine()
+    ));
+
+$application = new Application();
+$application->add(new ConfigGenerateCommand($configRenderer));
+$application->add(new ConfigDumpReferenceCommand());
+$application->run();
