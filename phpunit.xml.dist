@@ -18,15 +18,17 @@
     <testsuites>
         <testsuite name="JLMAwsBundle Test Suite YML">
             <directory>./Tests</directory>
-            <server name="ENV" value="test_yml"/>
-        </testsuite>
-        <testsuite name="JLMAwsBundle Test Suite XML">
-            <directory>./Tests</directory>
-            <server name="ENV" value="test_xml"/>
-        </testsuite>
-        <testsuite name="JLMAwsBundle Test Suite PHP">
-            <directory>./Tests</directory>
-            <server name="ENV" value="test_php"/>
+            
         </testsuite>
     </testsuites>    
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">.</directory>
+            <exclude>
+                <directory suffix=".php">Tests/</directory>
+                <directory suffix=".php">vendor/</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>
