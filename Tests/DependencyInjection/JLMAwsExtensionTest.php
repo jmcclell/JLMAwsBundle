@@ -174,5 +174,17 @@ class JLMAwsExtensionTest extends WebTestCase
         $this->assertTrue($defaultSettings['signature'] instanceof \Aws\Common\Signature\SignatureInterface);
         $this->assertEquals('MY_SERVICE', $defaultSettings['signature.service']);
         $this->assertEquals('MY_REGION', $defaultSettings['signature.region']);
-    }    
+    } 
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testDisabledService($format)
+    {
+        $client = $this->getClient('params_' . $format);
+        $container = $client->getContainer();
+
+        $this->assertFalse($container->has('jlm_aws.autoscaling'));
+        $this->assertFalse($container->has('jlm_aws.cloud_formation'));        
+    }   
 }

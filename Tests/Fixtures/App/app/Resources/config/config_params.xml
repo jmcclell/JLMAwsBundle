@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+>
+    <jlm-aws:config>         
+            <jlm-aws:services>
+              <!-- Test Disabled -->
+              <jlm-aws:autoscaling enabled="false"/>              
+              <jlm-aws:cloud-formation>false</jlm-aws:cloud-formation>
+
+              <!-- Test Auth Type -->
+              <jlm-aws:cloud-front name="ntlm">
+                <jlm-aws:client>
+                  <jlm-aws:request-options>
+                    <jlm-aws:auth username="user"
+                                  password="pass"
+                                  type="ntlm" />
+                  </jlm-aws:request-options>
+                </jlm-aws:client>
+              </jlm-aws:cloud-front>
+              <jlm-aws:cloud-front name="basic">
+                <jlm-aws:client>
+                  <jlm-aws:request-options>
+                    <jlm-aws:auth username="user"
+                                  password="pass"
+                                  type="basic" />
+                  </jlm-aws:request-options>
+                </jlm-aws:client>
+              </jlm-aws:cloud-front>
+
+              <jlm-aws:cloud-search />
+              <jlm-aws:cloud-trail />
+              <jlm-aws:cloud-watch />
+              <jlm-aws:data-pipeline />
+              <jlm-aws:direct-connect />
+              <jlm-aws:dynamo-db />
+              <jlm-aws:dynamo-db-20111205 />
+              <jlm-aws:ec2 />
+              <jlm-aws:elasticache />
+              <jlm-aws:elastic-beanstalk />
+              <jlm-aws:elastic-load-balancing />
+              <jlm-aws:elastic-transcoder />
+              <jlm-aws:emr />
+              <jlm-aws:glacier />
+              <jlm-aws:kinesis />
+              <jlm-aws:iam />
+              <jlm-aws:import-export />
+              <jlm-aws:opsworks />
+              <jlm-aws:rds />
+              <jlm-aws:redshift />
+              <jlm-aws:route53 />
+              <jlm-aws:s3 />
+              <jlm-aws:sdb />
+              <jlm-aws:ses />
+              <jlm-aws:sns />
+              <jlm-aws:sqs />
+              <jlm-aws:storage-gateway />
+              <jlm-aws:sts />
+              <jlm-aws:support />
+              <jlm-aws:swf />
+            </jlm-aws:services>
+    </jlm-aws:config>
+</container>
+
+
