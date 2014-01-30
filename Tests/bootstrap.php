@@ -4,9 +4,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 
 if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     $loader = require_once __DIR__.'/../vendor/autoload.php';
-
-	//$loader->add('JLM\\AwsBundle\\Tests', __DIR__);
-
+    
     AnnotationRegistry::registerLoader('class_exists');
 
     return $loader;

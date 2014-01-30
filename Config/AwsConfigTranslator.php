@@ -48,6 +48,7 @@ class AwsConfigTranslator
         'curl_options' => 'curl.options',
         'request_options' => 'request.options',        
         'request_options/throw_exceptions' => 'exceptions',
+        'request_options/query_params' => 'query',
         'command_params' => 'command.params',
         'backoff_logger' => 'client.backoff.logger',
         'backoff_logger_template' => 'client.backoff.logger.template',
@@ -132,9 +133,12 @@ class AwsConfigTranslator
      */
     protected function translateConfigKey($configKey)
     {
-    	return (isset($this->configKeyNameTranslationTable[$configKey])) ?
-    		$this->configKeyNameTranslationTable[$configKey] :
-    		$configKey;
+        if (isset($this->configKeyNameTranslationTable[$configKey])) {
+            return $this->configKeyNameTranslationTable[$configKey];
+        } else {
+            $key = explode('/', $configKey);
+            return $key[count($key) - 1];
+        }    		
     }
 
 	/**
@@ -201,7 +205,7 @@ class AwsConfigTranslator
 
 
             $translatedServiceType = $this->translateToAwsServiceName($serviceType); 
-            
+
             if (isset($serviceInstanceConfig['extends'])) {
         		$translatedInstanceConfig['extends'] = $serviceType . '.' . $serviceInstanceConfig['extends'];
         	} else {
@@ -211,10 +215,10 @@ class AwsConfigTranslator
         	} 
 
             if ($serviceInstanceName === 'default') {
-                $serviceInstanceName = $serviceType;
-            } else {            	            
-                $serviceInstanceName =  $serviceType . '.' . $serviceInstanceName;                               
-                $translatedInstanceConfig['alias'] = $translatedServiceType . '.' . $serviceInstanceName;
+                $serviceInstanceName = $translatedServiceType;
+            } else {     
+                $translatedInstanceConfig['alias'] = $serviceType . '.' . $serviceInstanceName;       	            
+                $serviceInstanceName =  $translatedServiceType . '.' . $serviceInstanceName;
             }
 
             $awsServiceConfig[$serviceInstanceName] = $translatedInstanceConfig;       

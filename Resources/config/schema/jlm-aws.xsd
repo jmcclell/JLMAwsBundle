@@ -79,7 +79,7 @@
     <xsd:complexType name="request-options">  
          <xsd:all>
             <xsd:element name="header" type="key-value" />
-            <xsd:element name="query" type="key-value" />
+            <xsd:element name="query-param" type="key-value" />
             <xsd:element name="auth" type="request-option-auth" />
             <xsd:element name="cookie" type="key-value" />
             <xsd:element name="param" type="key-value" />

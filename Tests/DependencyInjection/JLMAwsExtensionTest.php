@@ -187,4 +187,60 @@ class JLMAwsExtensionTest extends WebTestCase
         $this->assertFalse($container->has('jlm_aws.autoscaling'));
         $this->assertFalse($container->has('jlm_aws.cloud_formation'));        
     }   
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testRequestOptions($format)
+    {
+        $client = $this->getClient('params_' . $format);
+        $container = $client->getContainer();
+
+        $this->assertTrue($container->has('jlm_aws.cloud_search.custom_request_options'));
+
+        $aws = $container->get('jlm_aws.aws');
+        
+        $config = $aws->getConfig();
+        $config = $config['default_settings']['params']['services']['cloudsearch.custom_request_options'];
+
+        $requestOptions = $config['params']['request.options'];
+        
+        $this->assertEquals(2, $requestOptions['timeout']);
+        $this->assertEquals(false, $requestOptions['verify']);
+        $this->assertEquals('http://username:password@host:80', $requestOptions['proxy']);
+        $this->assertEquals(true, $requestOptions['debug']);
+        $this->assertEquals(true, $requestOptions['stream']);
+        $this->assertEquals(true, $requestOptions['allow_redirects']);
+        $this->assertEquals('/tmp', $requestOptions['save_to']);
+        $this->assertEquals(true, $requestOptions['exceptions']);
+        $this->assertEquals(1.5, $requestOptions['connect_timeout']);
+        $this->assertEquals('bar', $requestOptions['headers']['foo']);
+        $this->assertEquals('bleh', $requestOptions['headers']['blah']);
+        $this->assertEquals('bar', $requestOptions['cookies']['foo']);
+        $this->assertEquals('bleh', $requestOptions['cookies']['blah']);
+        $this->assertEquals('bar', $requestOptions['params']['foo']);
+        $this->assertEquals('bleh', $requestOptions['params']['blah']);
+        $this->assertEquals('bar', $requestOptions['query']['foo']);
+        $this->assertEquals('bleh', $requestOptions['query']['blah']);
+        $this->assertEquals(array('/my_key', 'MY_PASSWORD'), $requestOptions['ssl_key']);
+        $this->assertEquals(array('/my_cert', 'MY_PASSWORD'), $requestOptions['cert']);
+    }
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testAlias($format)
+    {
+        $client = $this->getClient('params_' . $format);
+        $container = $client->getContainer();
+
+        $this->assertTrue($container->has('jlm_aws.cloud_trail.alias'));
+
+        $aws = $container->get('jlm_aws.aws');
+        
+        $config = $aws->getConfig();
+        $config = $config['default_settings']['params']['services']['cloudtrail.alias'];
+        $alias = $config['alias'];
+        $this->assertEquals('cloud_trail.alias', $alias);
+    }
 }

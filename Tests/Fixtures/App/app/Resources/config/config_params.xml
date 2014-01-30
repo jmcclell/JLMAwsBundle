@@ -29,9 +29,39 @@
                   </jlm-aws:request-options>
                 </jlm-aws:client>
               </jlm-aws:cloud-front>
+              <!-- Test request options (sans auth type) -->
+              <jlm-aws:cloud-search name="custom_request_options">
+                <jlm-aws:client>
+                  <jlm-aws:request-options
+                      allow-redirects="true"
+                      save-to="/tmp"
+                      throw-exceptions="true"
+                      connect-timeout="1.5"
+                      timeout="2"
+                      verify="false" 
+                      proxy="http://username:password@host:80"
+                      debug="true"
+                      stream="true" >
+                    
+                    <jlm-aws:cert path="/my_cert" 
+                              password="MY_PASSWORD" />
+                    <jlm-aws:ssl-key path="/my_key"
+                                 password="MY_PASSWORD" />
 
-              <jlm-aws:cloud-search />
-              <jlm-aws:cloud-trail />
+                     <jlm-aws:header name="foo" value="bar" />
+                    <jlm-aws:header name="blah">bleh</jlm-aws:header>
+                    <jlm-aws:query-param name="foo" value="bar" />
+                    <jlm-aws:query-param name="blah">bleh</jlm-aws:query-param>
+                    <jlm-aws:cookie name="foo" value="bar" />
+                    <jlm-aws:cookie name="blah">bleh</jlm-aws:cookie>
+                    <jlm-aws:param name="foo" value="bar" />
+                    <jlm-aws:param name="blah">bleh</jlm-aws:param>
+
+                  </jlm-aws:request-options>
+                </jlm-aws:client>              
+              </jlm-aws:cloud-search>
+              <!-- Used to test alias -->
+              <jlm-aws:cloud-trail name="alias" />
               <jlm-aws:cloud-watch />
               <jlm-aws:data-pipeline />
               <jlm-aws:direct-connect />

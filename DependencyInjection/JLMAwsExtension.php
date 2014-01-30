@@ -31,14 +31,14 @@ class JLMAwsExtension extends Extension
      * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
-    {        
+    {       
         //die(json_encode($configs, JSON_PRETTY_PRINT));
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
         //die(json_encode($config, JSON_PRETTY_PRINT));
+        
         $awsConfigTranslator = new AwsConfigTranslator();
-
         $awsConfig = $awsConfigTranslator->translateConfigToAwsConfig($config);
 
         $awsServices = $this->generateServicesConfigArray($awsConfig, $awsConfigTranslator);
