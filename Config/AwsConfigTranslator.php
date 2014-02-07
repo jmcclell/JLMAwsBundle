@@ -105,6 +105,10 @@ class AwsConfigTranslator
 		$serviceNameParts = explode('_', $serviceName);
 		$serviceName = $serviceNameParts[0];
 
+        // If the lookup name has any periods, cut it off and anything after it. (eg: cloudfront.my_cloud_front)
+        $serviceNameParts = explode('.', $serviceName);
+        $serviceName = $serviceNameParts[0];
+
 		// Check if it's in the look up table, otherwise just capitalize the first letter
 		return (isset($this->properServiceNameLookupTable[$serviceName])) ? 
 			$this->properServiceNameLookupTable[$serviceName] :

@@ -27,6 +27,41 @@ class JLMAwsExtensionTest extends WebTestCase
         $container = $client->getContainer();
         $this->assertEquals('mysecret', $container->getParameter('kernel.secret'));
         $this->assertTrue($container->has('jlm_aws.aws'));
+
+        $this->assertFalse($container->has('jlm_aws.autoscaling'));            
+        $this->assertFalse($container->has('jlm_aws.cloud_formation'));
+        $this->assertFalse($container->has('jlm_aws.cloud_front'));
+        $this->assertFalse($container->has('jlm_aws.cloud_front_20120505'));
+        $this->assertFalse($container->has('jlm_aws.cloud_search'));
+        $this->assertFalse($container->has('jlm_aws.cloud_trail'));
+        $this->assertFalse($container->has('jlm_aws.cloud_watch'));
+        $this->assertFalse($container->has('jlm_aws.data_pipeline'));
+        $this->assertFalse($container->has('jlm_aws.direct_connect'));
+        $this->assertFalse($container->has('jlm_aws.dynamo_db'));
+        $this->assertFalse($container->has('jlm_aws.dynamo_db_20111205'));
+        $this->assertFalse($container->has('jlm_aws.ec2'));
+        $this->assertFalse($container->has('jlm_aws.elasticache'));
+        $this->assertFalse($container->has('jlm_aws.elastic_beanstalk'));
+        $this->assertFalse($container->has('jlm_aws.elastic_load_balancing'));
+        $this->assertFalse($container->has('jlm_aws.elastic_transcoder'));
+        $this->assertFalse($container->has('jlm_aws.emr'));
+        $this->assertFalse($container->has('jlm_aws.glacier'));
+        $this->assertFalse($container->has('jlm_aws.kinesis'));
+        $this->assertFalse($container->has('jlm_aws.iam'));
+        $this->assertFalse($container->has('jlm_aws.import_export'));
+        $this->assertFalse($container->has('jlm_aws.opsworks'));
+        $this->assertFalse($container->has('jlm_aws.rds'));
+        $this->assertFalse($container->has('jlm_aws.redshift'));
+        $this->assertFalse($container->has('jlm_aws.route53'));
+        $this->assertFalse($container->has('jlm_aws.s3'));
+        $this->assertFalse($container->has('jlm_aws.sdb'));
+        $this->assertFalse($container->has('jlm_aws.ses'));
+        $this->assertFalse($container->has('jlm_aws.sns'));
+        $this->assertFalse($container->has('jlm_aws.sqs'));
+        $this->assertFalse($container->has('jlm_aws.storage_gateway'));
+        $this->assertFalse($container->has('jlm_aws.sts'));
+        $this->assertFalse($container->has('jlm_aws.support'));
+        $this->assertFalse($container->has('jlm_aws.swf'));
     }    
 
     /**
@@ -242,5 +277,35 @@ class JLMAwsExtensionTest extends WebTestCase
         $config = $config['default_settings']['params']['services']['cloudtrail.alias'];
         $alias = $config['alias'];
         $this->assertEquals('cloud_trail.alias', $alias);
+    }
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testClass($format)
+    {
+        $client = $this->getClient('params_' . $format);
+        $container = $client->getContainer();
+
+        $this->assertTrue($container->has('jlm_aws.cloud_watch.parent'));
+        $aws = $container->get('jlm_aws.aws');
+        $parent = $aws->get('cloud_watch.parent');
+        //$parent = $container->get('jlm_aws.cloud_watch.parent');
+        $this->assertTrue($parent instanceof \JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatchClient);        
+    }
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testExtends($format)
+    {
+        $client = $this->getClient('params_' . $format);
+        $container = $client->getContainer();
+
+        $this->assertTrue($container->has('jlm_aws.cloud_watch.parent'));
+        $this->assertTrue($container->has('jlm_aws.cloud_watch.child'));
+
+        $child = $container->get('jlm_aws.cloud_watch.child');
+        $this->assertTrue($child instanceof \JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatchClient);
     }
 }

@@ -64,6 +64,44 @@ class JLMAwsExtension extends Extension
         $loader->load($tmpFile);
     }
 
+    private function getServiceClassFromAwsConfig($service, array $awsConfig, AwsConfigTranslator $awsConfigTranslator)
+    {
+        $serviceConfig = $awsConfig['services'];
+
+        // simplest case, class is defined
+        if (isset($serviceConfig['class'])) {
+            return $serviceConfig['class'];
+        }
+
+        // if extends is set, we have to walk the chiain until 
+        // a. class is defined for one of the parents
+        // b. we run out of parents or the class extends itself (exception territory)
+        if (isset($serviceConfig['extends'])) {   
+            $curExtends = $serviceConfg['extends'];
+            $curService = $service;
+            while(true) { 
+                if(!isset($awsConfig['services'][$curExtends])
+                    || $curExtends == $curService) { // prevent infinite recursion
+                    return $awsConfigTranslator->getDefaultAwsClassByServiceName($curService);
+                }
+
+                $parentConfig = $awsConfig['services'][$curExtends];
+                if (isset($parentConfig['class'])) {
+                    return $parentConfig['class'];
+                }
+
+                if (isset($parentConfig['extends'])) {
+                    $curService = $curExtends;
+                    $curExtends = $parentConfig['extends'];
+                } else {
+                    return $awsConfigTranslator->getDefaultAwsClassByServiceName($curService);
+                }      
+            }
+        } else {
+            return $awsConfigTranslator->getDefaultAwsClassByServiceName($service);
+        }
+    }
+
     private function generateServicesConfigArray(array $awsConfig, AwsConfigTranslator $awsConfigTranslator)
     {
         $awsServices['services'] = array(
@@ -80,21 +118,13 @@ class JLMAwsExtension extends Extension
                 continue;
             }
 
-            if (isset($serviceConfig['class'])) {
-                $class = $serviceConfig['class'];
-            } else {
-                if (isset($serviceConfig['extends'])) {                   
-                    $class = $awsConfigTranslator->getDefaultAwsClassByServiceName($serviceConfig['extends']);
-                } else {
-                    $class = $awsConfigTranslator->getDefaultAwsClassByServiceName($service);
-                }
-            }
+            $class = $this->getServiceClassFromAwsConfig($service, $awsConfig, $awsConfigTranslator);
+            
             $awsServices['services'][self::AWS_SERVICE_PREFIX . $service] = array(
                     'class' => $class,
-                    'factory_service' => '@' . self::AWS_SERVICE_PREFIX . 'aws',
+                    'factory_service' => self::AWS_SERVICE_PREFIX . 'aws',
                     'factory_method' => 'get',
                     'arguments' => array($service)
-
                 );
         }
 

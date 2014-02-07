@@ -48,7 +48,7 @@
                     <jlm-aws:ssl-key path="/my_key"
                                  password="MY_PASSWORD" />
 
-                     <jlm-aws:header name="foo" value="bar" />
+                    <jlm-aws:header name="foo" value="bar" />
                     <jlm-aws:header name="blah">bleh</jlm-aws:header>
                     <jlm-aws:query-param name="foo" value="bar" />
                     <jlm-aws:query-param name="blah">bleh</jlm-aws:query-param>
@@ -62,7 +62,17 @@
               </jlm-aws:cloud-search>
               <!-- Used to test alias -->
               <jlm-aws:cloud-trail name="alias" />
-              <jlm-aws:cloud-watch />
+              <!-- Used to test custom class and extends -->
+              <jlm-aws:cloud-watch 
+                  name="parent"
+                  class="JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatchClient" >
+                  <jlm-aws:credentials key="PARENT_KEY" secret="PARENT_SECRET" />
+              </jlm-aws:cloud-watch>
+              <jlm-aws:cloud-watch 
+                  name="child"
+                  extends="parent" >
+                  <jlm-aws:credentials key="CHILD_KEY" />
+              </jlm-aws:cloud-watch>
               <jlm-aws:data-pipeline />
               <jlm-aws:direct-connect />
               <jlm-aws:dynamo-db />
