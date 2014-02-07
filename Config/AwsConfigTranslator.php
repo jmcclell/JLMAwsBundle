@@ -3,9 +3,9 @@
 namespace JLM\AwsBundle\Config;
 
 /**
- * Utility class which aids in transforming the JLMAwsBundle's configuration
+ * Utility class which transforms the JLMAwsBundle's configuration
  * into an AWS configuration array that can be passed directly to the
- * AWS service factory.
+ * AWS service builder.
  *
  * Translation happens both in terms of array structure and key names.
  *
@@ -21,7 +21,8 @@ namespace JLM\AwsBundle\Config;
  * the values found in that config.
  *
  * Our 'default' service instances simply correspond to the services that are already in this config. All
- * other service instances are added and will extend one of these default instances, by default.
+ * other service instances are added and will extend one of these default instances, unless
+ * specified otherwise in the configuration.
  */
 class AwsConfigTranslator
 {
@@ -65,12 +66,14 @@ class AwsConfigTranslator
 		'autoscaling' => 'AutoScaling',
         'cloudformation' => 'CloudFormation',
         'cloudfront' => 'CloudFront',
+        'cloudfront_20120505' => 'CloudFront',
         'cloudsearch' => 'CloudSearch',
         'cloudtrail' => 'CloudTrail',
         'cloudwatch' => 'CloudWatch',
         'datapipeline' => 'DataPipeline',
         'directconnect' => 'DirectConnect',
         'dynamodb' => 'DynamoDb',
+        'dynamodb_20111205' => 'DynamoDb',
         'elasticache' => 'ElastiCache',
         'elasticbeanstalk' => 'ElasticBeanstalk',
         'elasticloadbalancing' => 'ElasticLoadBalancing',
@@ -78,21 +81,22 @@ class AwsConfigTranslator
         'importexport' => 'ImportExport',
         'opsworks' => 'OpsWorks',
         'storagegateway' => 'StorageGateway',
-        'sdb' => 'SimpleDb'
+        'sdb' => 'SimpleDb',  
+
 		);
 
 	/**
-	 * [getAwsServiceName description]
+	 * Translates an AWS service name to the spaceless service name (eg: dynamo_db -> dynamodb)
 	 * @param  string $name The service name per the bundle's configuration definition
 	 * @return string       The translated service name (AWS service provider look up name)
 	 */
-	public function translateToAwsServiceName($bundleConfigName)
+	public function translateToSpacelessAwsServiceName($bundleConfigName)
 	{
 		return preg_replace('/_([^0-9])/', '$1', $bundleConfigName); // remove underscores except for if followed by a number such as with cloud_front_20120505 which should become cloudfront_20120505
 	}
 
 	/**
-	 * Returns the marketing name for a particular service, ie: the properly capitalized service
+	 * Returns the proper name for a particular service, ie: the properly capitalized service
 	 * name used for display. This name is also used as part of the class path for each service
 	 * client.
 	 * 
@@ -101,14 +105,6 @@ class AwsConfigTranslator
 	 */
 	public function getProperAwsServiceName($serviceName)
 	{
-		// If the lookup name has an underscore, cut it off and anything after it. (eg: cloudfront_20120505)
-		$serviceNameParts = explode('_', $serviceName);
-		$serviceName = $serviceNameParts[0];
-
-        // If the lookup name has any periods, cut it off and anything after it. (eg: cloudfront.my_cloud_front)
-        $serviceNameParts = explode('.', $serviceName);
-        $serviceName = $serviceNameParts[0];
-
 		// Check if it's in the look up table, otherwise just capitalize the first letter
 		return (isset($this->properServiceNameLookupTable[$serviceName])) ? 
 			$this->properServiceNameLookupTable[$serviceName] :
@@ -122,9 +118,14 @@ class AwsConfigTranslator
 	 * @param  string $name The client service lookup name
 	 * @return string       The fully qualified class name
 	 */
-	public function getDefaultAwsClassByServiceName($name)
+	public function getDefaultAwsClassByServiceType($serviceType)
 	{
-		$properName = $this->getProperAwsServiceName($name);
+        // Remove anything after an underscore from service type
+        // so that we ge the base service type. eg: cloudfront rather than cloudfront_20120505
+        $parts = explode('_', $serviceType);
+        $serviceType = $parts[0];
+        
+		$properName = $this->getProperAwsServiceName($serviceType);
 
 		return "Aws\\{$properName}\\{$properName}Client";
 	}
@@ -161,20 +162,24 @@ class AwsConfigTranslator
                 'services' => array()
             );
 
+        $defaultSettings = array();
         if(!empty($config['default_settings'])) {          
-            $awsConfig['services']['default_settings']['params'] = $this->translateConfigBlock($config['default_settings']);
+            $defaultSettings = $this->translateConfigBlock($config['default_settings']);
+            $awsConfig['services']['default_settings']['params'] = $defaultSettings;
         }
 
         if(!empty($config['services'])) {
-            foreach($config['services'] as $serviceName => $serviceConfig) {
-                if (empty($serviceConfig)) {
+            foreach($config['services'] as $serviceType => $serviceInstancesConfig) {
+                if (empty($serviceInstancesConfig)) {
                     continue; // We only generate config for services that included configuration parameters
                 }
-                $awsConfig['services'] = array_merge($awsConfig['services'], 
-                	$this->translateServiceConfigBlock($serviceName, $serviceConfig));
+
+                $translatedConfigBlock = $this->translateServiceConfigBlock($serviceType, $serviceInstancesConfig, $defaultSettings);
+                $awsConfig['services'] = array_merge($awsConfig['services'], $translatedConfigBlock);
             }
         }
 
+        // die(json_encode($awsConfig, JSON_PRETTY_PRINT));
         return $awsConfig;
     }
 
@@ -190,7 +195,7 @@ class AwsConfigTranslator
      * @param  array $serviceConfig  The bundle configuration for the service type
      * @return array                 An AWS configuration array for the service type, containing all the instances for that type
      */
-    protected function translateServiceConfigBlock($serviceType, $serviceConfig)
+    protected function translateServiceConfigBlock($serviceType, $serviceConfig, $defaultSettings)
     {
     	$awsServiceConfig = array();
 
@@ -208,14 +213,12 @@ class AwsConfigTranslator
             }    
 
 
-            $translatedServiceType = $this->translateToAwsServiceName($serviceType); 
+            $translatedServiceType = $this->translateToSpacelessAwsServiceName($serviceType); 
 
             if (isset($serviceInstanceConfig['extends'])) {
-        		$translatedInstanceConfig['extends'] = $serviceType . '.' . $serviceInstanceConfig['extends'];
+        		$translatedInstanceConfig['extends'] = $translatedServiceType . '.' . $serviceInstanceConfig['extends'];
         	} else {
-        		if ($serviceInstanceName !== 'default') {
-        			$translatedInstanceConfig['extends'] = $translatedServiceType;	
-        		}        	    
+        		$translatedInstanceConfig['extends'] = $translatedServiceType;	     	    
         	} 
 
             if ($serviceInstanceName === 'default') {
@@ -228,6 +231,7 @@ class AwsConfigTranslator
             $awsServiceConfig[$serviceInstanceName] = $translatedInstanceConfig;       
         }
 
+        $awsServiceConfig = $this->processInheritance($serviceType, $awsServiceConfig, $defaultSettings);
         return $awsServiceConfig;
     }
 
@@ -346,5 +350,68 @@ class AwsConfigTranslator
             $authType = ucfirst($authType);
         }
     	return $authType;
+    }
+
+    /**
+     * Guzzle's configuration inheritance is really limited. 
+     *
+     * It only supports 1-level inheritance. Thus, if A is a parent of B, and B
+     * is a parent of C, then C does NOT get parameters defined in A, but rather
+     * only those explicitly defined in B. So, we have to process our array and 
+     * do a lot of copying to overcome this. It's worth it, though, as it makes
+     * our configuration much more extensible.
+     *
+     * This method also ensures all services have classes explicitly set which
+     * makes things easier for our Symfony extension to convert things into
+     * Symfony services.
+     *
+     * @param  string $serviceType
+     * @param  array $awsServiceConfig The translated AWS configuration array
+     * @param  array $defaultSettings
+     * 
+     * @return array            The final array with inheritance processed
+     * 
+     */
+    protected function processInheritance($serviceType, $awsServiceConfig, $defaultSettings = array())
+    {
+        foreach ($awsServiceConfig as $name => &$service) {                        
+            $parentName = (!empty($service['extends'])) ? $service['extends'] : null;
+
+            if (empty($service['params'])) {
+                $service['params'] = array();
+            }
+
+            while($parentName != null) {
+                if (!isset($awsServiceConfig[$parentName])) {
+                    break;
+                }
+                $parent = $awsServiceConfig[$parentName];
+
+                if (empty($parent['params'])) {
+                    $parent['params'] = array();
+                }
+
+                $service['params'] = array_merge($parent['params'], $service['params']);
+
+                if (!isset($service['class']) && isset($parent['class'])) {
+                    $service['class'] = $parent['class'];
+                }
+
+                $parentParentName = (!empty($parent['extends'])) ? $parent['extends'] : null;
+                if ($parentParentName == $parentName) {
+                    break;
+                }
+                $parentName = $parentParentName;
+            }
+
+            $service['params'] = array_merge($defaultSettings, $service['params']);
+
+            if (empty($service['class'])) {
+                // Default to the service type class
+                $service['class'] = $this->getDefaultAwsClassByServiceType($serviceType);
+            }
+        }
+
+        return $awsServiceConfig;
     }
 }

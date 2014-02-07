@@ -4,7 +4,10 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
 >
-    <jlm-aws:config>         
+    <jlm-aws:config>    
+            <jlm-aws:default-settings>
+              <jlm-aws:endpoint region="us-east-1"/>              
+            </jlm-aws:default-settings>     
             <jlm-aws:services>
               <!-- Test Disabled -->
               <jlm-aws:autoscaling enabled="false"/>              
@@ -65,7 +68,7 @@
               <!-- Used to test custom class and extends -->
               <jlm-aws:cloud-watch 
                   name="parent"
-                  class="JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatchClient" >
+                  class="JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatch\MyCloudWatchClient" >
                   <jlm-aws:credentials key="PARENT_KEY" secret="PARENT_SECRET" />
               </jlm-aws:cloud-watch>
               <jlm-aws:cloud-watch 

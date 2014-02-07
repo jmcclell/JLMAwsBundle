@@ -15,15 +15,15 @@ class AwsConfigTranslatorTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * 
-	 * @dataProvider translateToAwserviceNameProvider
+	 * @dataProvider translateToSpacelessAwserviceNameProvider
 	 */
-	public function translateToAwsServiceName($input, $expected)
+	public function translateToSpacelessAwsServiceName($input, $expected)
 	{
-		$output = $this->translator->translateToAwsServiceName($input);
+		$output = $this->translator->translateToSpacelessAwsServiceName($input);
 		$this->assertEquals($output, $expected);
 	}
 
-	public function translateToAwsServiceNameProvider()
+	public function translateToSpacelessAwsServiceNameProvider()
 	{
 		return array(
 			array('auto_scaling', 'autoscaling'),
@@ -90,15 +90,15 @@ class AwsConfigTranslatorTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * 
-	 * @dataProvider testGetDefaultAwsClassByServiceNameProvider
+	 * @dataProvider testGetDefaultAwsClassByServiceTypeProvider
 	 */
-	public function testGetDefaultAwsClassByServiceName($input, $expected)
+	public function testGetDefaultAwsClassByServiceType($input, $expected)
 	{
-		$output = $this->translator->getDefaultAwsClassByServiceName($input);
+		$output = $this->translator->getDefaultAwsClassByServiceType($input);
 		$this->assertEquals($output, $expected);
 	}
 
-	public function testGetDefaultAwsClassByServiceNameProvider()
+	public function testGetDefaultAwsClassByServiceTypeProvider()
 	{
 		return array(
 				array('autoscaling', 'Aws\AutoScaling\AutoScalingClient'),

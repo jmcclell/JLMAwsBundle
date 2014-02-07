@@ -73,7 +73,7 @@ class JLMAwsExtensionTest extends WebTestCase
         $container = $client->getContainer();
         $aws = $container->get('jlm_aws.aws');
         $defaultSettings = $aws->getData('default_settings');
-        $defaultSettings = $defaultSettings['params']['services']['default_settings']['params'];
+        $defaultSettings = $defaultSettings['params'];
         $this->assertEquals('MY_KEY', $defaultSettings['key']);
         $this->assertEquals('MY_SECRET', $defaultSettings['secret']);
         $this->assertEquals('us-east-1', $defaultSettings['region']);
@@ -183,7 +183,7 @@ class JLMAwsExtensionTest extends WebTestCase
 
         $aws = $container->get('jlm_aws.aws');
         $defaultSettings = $aws->getData('default_settings');
-        $defaultSettings = $defaultSettings['params']['services']['default_settings']['params'];
+        $defaultSettings = $defaultSettings['params'];
 
         // Ensure we did not remove unnecessary data, let the AWS SDK handle that logic
         $this->assertFalse(empty($defaultSettings['key']));
@@ -204,7 +204,7 @@ class JLMAwsExtensionTest extends WebTestCase
 
         $aws = $container->get('jlm_aws.aws');
         $defaultSettings = $aws->getData('default_settings');
-        $defaultSettings = $defaultSettings['params']['services']['default_settings']['params'];
+        $defaultSettings = $defaultSettings['params'];
 
         $this->assertTrue($defaultSettings['signature'] instanceof \Aws\Common\Signature\SignatureInterface);
         $this->assertEquals('MY_SERVICE', $defaultSettings['signature.service']);
@@ -235,10 +235,9 @@ class JLMAwsExtensionTest extends WebTestCase
 
         $aws = $container->get('jlm_aws.aws');
         
-        $config = $aws->getConfig();
-        $config = $config['default_settings']['params']['services']['cloudsearch.custom_request_options'];
-
-        $requestOptions = $config['params']['request.options'];
+        $config = $aws->getData('cloudsearch.custom_request_options');
+        $config = $config['params'];
+        $requestOptions = $config['request.options'];
         
         $this->assertEquals(2, $requestOptions['timeout']);
         $this->assertEquals(false, $requestOptions['verify']);
@@ -273,8 +272,7 @@ class JLMAwsExtensionTest extends WebTestCase
 
         $aws = $container->get('jlm_aws.aws');
         
-        $config = $aws->getConfig();
-        $config = $config['default_settings']['params']['services']['cloudtrail.alias'];
+        $config = $aws->getData('cloudtrail.alias');
         $alias = $config['alias'];
         $this->assertEquals('cloud_trail.alias', $alias);
     }
@@ -288,10 +286,9 @@ class JLMAwsExtensionTest extends WebTestCase
         $container = $client->getContainer();
 
         $this->assertTrue($container->has('jlm_aws.cloud_watch.parent'));
-        $aws = $container->get('jlm_aws.aws');
-        $parent = $aws->get('cloud_watch.parent');
-        //$parent = $container->get('jlm_aws.cloud_watch.parent');
-        $this->assertTrue($parent instanceof \JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatchClient);        
+        $parent = $container->get('jlm_aws.cloud_watch.parent');
+        
+        $this->assertTrue($parent instanceof \JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatch\MyCloudWatchClient);        
     }
 
     /**
@@ -306,6 +303,7 @@ class JLMAwsExtensionTest extends WebTestCase
         $this->assertTrue($container->has('jlm_aws.cloud_watch.child'));
 
         $child = $container->get('jlm_aws.cloud_watch.child');
-        $this->assertTrue($child instanceof \JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatchClient);
+
+        $this->assertTrue($child instanceof \JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatch\MyCloudWatchClient);
     }
 }
