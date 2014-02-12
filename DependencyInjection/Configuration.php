@@ -299,9 +299,23 @@ class Configuration implements ConfigurationInterface
                                         } 
                                     })
                             ->end()                                 
-                            ->prototype('array')                        
-                                ->canBeEnabled()
-                                ->children()                            
+                            ->prototype('array')                               
+                                ->addDefaultsIfNotSet()                      
+                                ->treatFalseLike(array('enabled' => false))
+                                ->treatTrueLike(array('enabled' => true))
+                                ->treatNullLike(array('enabled' => true))
+                                ->beforeNormalization()
+                                    ->ifArray()
+                                    ->then(function ($v) {
+                                        $v['enabled'] = isset($v['enabled']) ? $v['enabled'] : true;
+
+                                        return $v;
+                                    })
+                                ->end()
+                                ->children() 
+                                    ->booleanNode('enabled')
+                                        ->defaultFalse()
+                                    ->end()                         
                                     ->scalarNode('name')                                        
                                         ->info('The name for this service. Will be used exactly as written as the alias in the AWS service builder and as the Symfony service name suffix, ie: @jlm_aws.{name}. Except for "default" which will automatically use the default service name for the given service type, eg: ec2, cloudwatch, etc.')
                                         ->cannotBeEmpty()                                
