@@ -25,6 +25,9 @@ class JLMAwsExtension extends Extension
     const AWS_SERVICE_PREFIX = 'jlm_aws.'; // TODO: Make configurable
     const BASE_CLASS = 'JLM\AwsBundle\Aws\Common\Aws'; // TODO: Make configurable
 
+    private $baseClass = null;
+    private $servicePrefix = null;
+
     public function getAlias()
     {
         return 'jlm_aws';
@@ -37,6 +40,14 @@ class JLMAwsExtension extends Extension
     {       
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+        $this->baseClass = $config['aws_base_class'];
+
+        $this->servicePrefix = $config['service_prefix'];
+        if (!empty($this->servicePrefix)) {
+            $this->servicePrefix .= '.';
+        }
+
         
         $awsConfigTranslator = new AwsConfigTranslator();
         $awsConfig = $awsConfigTranslator->translateConfigToAwsConfig($config);
@@ -47,10 +58,10 @@ class JLMAwsExtension extends Extension
     private function generateServices(array $awsConfig, ContainerBuilder $container)
     {
         $awsConfig = $this->resolveServices($awsConfig);
-        $aws = new Definition(self::BASE_CLASS, array($awsConfig));
-        $aws->setFactoryClass(self::BASE_CLASS);
+        $aws = new Definition($this->baseClass, array($awsConfig));
+        $aws->setFactoryClass($this->baseClass);
         $aws->setFactoryMethod('factory');
-        $container->setDefinition('jlm_aws.aws', $aws);
+        $container->setDefinition($this->servicePrefix . 'aws', $aws);
 
         foreach ($awsConfig['services'] as $service => $serviceConfig) {
             if (!isset($serviceConfig['class'])) {
@@ -58,9 +69,9 @@ class JLMAwsExtension extends Extension
             }
 
             $definition = new Definition($serviceConfig['class'], array($service));
-            $definition->setFactoryService(self::AWS_SERVICE_PREFIX . 'aws');
+            $definition->setFactoryService($this->servicePrefix . 'aws');
             $definition->setFactoryMethod('get');
-            $container->setDefinition(self::AWS_SERVICE_PREFIX . $service, $definition);       
+            $container->setDefinition($this->servicePrefix . $service, $definition);       
         }
     }
 

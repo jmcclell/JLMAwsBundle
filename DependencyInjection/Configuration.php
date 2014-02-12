@@ -42,6 +42,13 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('service_prefix')
+                    ->defaultValue('jlm_aws')
+                ->end()
+                ->scalarNode('aws_base_class')
+                    ->defaultValue('JLM\AwsBundle\Aws\Common\Aws')
+                    ->cannotBeEmpty()
+                ->end()
                 ->arrayNode('default_settings')
                     ->info('Default settings applied to all services. These override the SDK\'s defaults. (@see http://docs.aws.amazon.com/aws-sdk-php/guide/latest/configuration.html)')
                     ->append($this->getCredentialConfigNode())
