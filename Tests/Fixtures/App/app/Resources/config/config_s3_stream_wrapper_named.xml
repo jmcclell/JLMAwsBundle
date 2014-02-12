@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+>
+    <jlm-aws:config
+            s3_stream_wrapper="my_s3"
+        >
+            <jlm-aws:default-settings>
+                <jlm-aws:credentials 
+                        key="MY_UNUSED_KEY"
+                        secret="MY_UNUSED_SECRET"
+                   />
+            </jlm-aws:default-settings>
+
+            <jlm-aws:services>
+                <jlm-aws:s3 name="my_s3"/>
+            </jlm-aws:services>
+    </jlm-aws:config>
+</container>
+
+

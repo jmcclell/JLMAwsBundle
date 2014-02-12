@@ -53,6 +53,28 @@ class JLMAwsExtension extends Extension
         $awsConfig = $awsConfigTranslator->translateConfigToAwsConfig($config);
 
         $this->generateServices($awsConfig, $container);
+
+        $this->registerS3StreamWrapper($config, $container);        
+    }
+
+    private function registerS3StreamWrapper(array $config, ContainerBuilder $container)
+    {
+        $s3StreamWrapper = $config['s3_stream_wrapper'];
+        if(!empty($s3StreamWrapper)) {
+            if ($s3StreamWrapper === true) {
+                $s3StreamWrapper = 's3';
+            } else {
+                $s3StreamWrapper = 's3.' . $s3StreamWrapper;
+            }
+
+            $s3 = $container->get($this->servicePrefix . $s3StreamWrapper, ContainerInterface::IGNORE_ON_INVALID_REFERENCE);
+
+            if ($s3 == null) {
+                throw new \Exception("Configuration directive 's3_stream_wrapper' is set to '$s3StreamWrapper', but no S3 service is configured by that name.'");
+            }
+
+            $s3->registerStreamWrapper();
+        }
     }
 
     private function generateServices(array $awsConfig, ContainerBuilder $container)
@@ -130,5 +152,4 @@ class JLMAwsExtension extends Extension
 
         return $value;
     }
-
 }

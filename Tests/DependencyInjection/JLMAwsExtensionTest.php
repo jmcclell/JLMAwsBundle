@@ -397,4 +397,29 @@ class JLMAwsExtensionTest extends WebTestCase
         $this->assertEquals(array('override_only' => 'override_value', 'foo' => 'override_bar', 'blah' => 'bleh'), $opts['cookies']);
         $this->assertEquals(array('override_only' => 'override_value', 'foo' => 'override_bar', 'blah' => 'bleh'), $opts['query']);
     }
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testS3StreamWrapperTrue($format)
+    {
+        $client = $this->getClient('s3_stream_wrapper_true_' . $format);
+        $container = $client->getContainer();
+
+        $wrappers = stream_get_wrappers();
+        $this->assertTrue(in_array('s3', $wrappers));
+    }
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testS3StreamWrapperNamed($format)
+    {
+        $client = $this->getClient('s3_stream_wrapper_named_' . $format);
+        $container = $client->getContainer();
+
+        $wrappers = stream_get_wrappers();
+
+        $this->assertTrue(in_array('s3', $wrappers));
+    }
 }
