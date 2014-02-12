@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+>
+    <imports>
+        <import resource="config_inheritance_parent.xml" />
+    </imports>
+
+    <jlm-aws:config>         
+            <jlm-aws:services>
+               <jlm-aws:ec2 name="my_ec2">
+                <jlm-aws:client>
+                  <jlm-aws:request-options
+                      allow-redirects="true"
+                      save-to="/tmp_override" >
+                    
+                    <jlm-aws:cert path="/my_override_cert"  />
+                    <jlm-aws:ssl-key path="/my_override_key" password="MY_OVERRIDE_PASSWORD" />
+
+                    <jlm-aws:header name="foo" value="override_bar" />
+                    <jlm-aws:header name="override_only">override_value</jlm-aws:header>
+                    <jlm-aws:query-param name="foo" value="override_bar" />
+                    <jlm-aws:query-param name="override_only">override_value</jlm-aws:query-param>
+                    <jlm-aws:cookie name="foo" value="override_bar" />
+                    <jlm-aws:cookie name="override_only">override_value</jlm-aws:cookie>
+                    <jlm-aws:param name="foo" value="override_bar" />
+                    <jlm-aws:param name="override_only">override_value</jlm-aws:param>
+
+                  </jlm-aws:request-options>
+                </jlm-aws:client>              
+              </jlm-aws:ec2>
+            </jlm-aws:services>
+    </jlm-aws:config>
+</container>
+
+

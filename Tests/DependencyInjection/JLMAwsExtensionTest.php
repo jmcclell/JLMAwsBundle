@@ -20,6 +20,26 @@ class JLMAwsExtensionTest extends WebTestCase
 
     /**
      * @dataProvider formatDataProvider
+     * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage The child node "path" at path "jlm_aws.default_settings.client.request_options.ssl_key" must be configured.
+     */
+    public function testMissingPathInKey($format)
+    {
+        $client = static::getClient('missing_path_key_' . $format);
+    }
+
+    /**
+     * @dataProvider formatDataProvider
+     * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage The child node "path" at path "jlm_aws.default_settings.client.request_options.cert" must be configured.
+     */
+    public function testMissingPathInCert($format)
+    {
+        $client = static::getClient('missing_path_cert_' . $format);
+    }
+
+    /**
+     * @dataProvider formatDataProvider
      */
     public function testMinimumConfig($format)
     {
@@ -305,5 +325,76 @@ class JLMAwsExtensionTest extends WebTestCase
         $child = $container->get('jlm_aws.cloud_watch.child');
 
         $this->assertTrue($child instanceof \JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatch\MyCloudWatchClient);
+    }
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testRequestOptionInheritance($format)
+    {
+        $client = $this->getClient('params_' . $format);
+        $container = $client->getContainer();
+
+        $this->assertTrue($container->has('jlm_aws.data_pipeline.request_options_parent'));
+        $this->assertTrue($container->has('jlm_aws.data_pipeline.request_options_child'));
+
+        $aws = $container->get('jlm_aws.aws');
+        
+        $child = $aws->getData('datapipeline.request_options_child');
+        
+        $opts = $child['params']['request.options'];
+
+        $this->assertEquals(false, $opts['allow_redirects']);
+        $this->assertEquals('/tmp_child', $opts['save_to']);
+        $this->assertEquals(false, $opts['exceptions']);
+        $this->assertEquals(1.5, $opts['connect_timeout']);
+        $this->assertEquals(2, $opts['timeout']);
+        $this->assertEquals(false, $opts['verify']);
+        $this->assertEquals(null, $opts['proxy']);
+        $this->assertEquals(true, $opts['debug']);
+        $this->assertEquals(true, $opts['stream']);
+
+        $this->assertEquals('/my_child_cert', $opts['cert']);
+        $this->assertEquals(array('/my_child_key', 'MY_CHILD_PASSWORD'), $opts['ssl_key']);
+
+
+        $this->assertEquals(array('child_only' => 'child_value', 'foo' => 'child_bar', 'blah' => 'bleh'), $opts['headers']);
+        $this->assertEquals(array('child_only' => 'child_value', 'foo' => 'child_bar', 'blah' => 'bleh'), $opts['params']);
+        $this->assertEquals(array('child_only' => 'child_value', 'foo' => 'child_bar', 'blah' => 'bleh'), $opts['cookies']);
+        $this->assertEquals(array('child_only' => 'child_value', 'foo' => 'child_bar', 'blah' => 'bleh'), $opts['query']);
+    }
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testSymfonyConfigInheritance($format)
+    {
+        $client = $this->getClient('inheritance_child_' . $format);
+        $container = $client->getContainer();
+
+        $this->assertTrue($container->has('jlm_aws.ec2.my_ec2'));
+
+
+        $aws = $container->get('jlm_aws.aws');
+        
+        $child = $aws->getData('ec2.my_ec2');
+        
+        // request options are the deepest we can go so it's a good overall test
+        $opts = $child['params']['request.options'];
+
+        $this->assertEquals(true, $opts['allow_redirects']);
+        $this->assertEquals('/tmp_override', $opts['save_to']);
+        $this->assertEquals(false, $opts['exceptions']);;
+        $this->assertEquals('user:pass@proxy.com:80', $opts['proxy']);
+
+
+        $this->assertEquals('/my_override_cert', $opts['cert']);
+        $this->assertEquals(array('/my_override_key', 'MY_OVERRIDE_PASSWORD'), $opts['ssl_key']);
+
+
+        $this->assertEquals(array('override_only' => 'override_value', 'foo' => 'override_bar', 'blah' => 'bleh'), $opts['headers']);
+        $this->assertEquals(array('override_only' => 'override_value', 'foo' => 'override_bar', 'blah' => 'bleh'), $opts['params']);
+        $this->assertEquals(array('override_only' => 'override_value', 'foo' => 'override_bar', 'blah' => 'bleh'), $opts['cookies']);
+        $this->assertEquals(array('override_only' => 'override_value', 'foo' => 'override_bar', 'blah' => 'bleh'), $opts['query']);
     }
 }

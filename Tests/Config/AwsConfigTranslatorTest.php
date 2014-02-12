@@ -124,24 +124,4 @@ class AwsConfigTranslatorTest extends \PHPUnit_Framework_TestCase
 		        array('s3', 'Aws\S3\S3Client')
 			);
 	}
-
-	public function testProperServiceNameSet()
-	{
-		$this->markTestIncomplete();
-	}
-
-	public function testProperServiceAliasSet()
-	{
-		$this->markTestIncomplete();
-	}
-
-	public function testProperDefaultServiceExtendsSet()
-	{
-		$this->markTestIncomplete();
-	}
-
-	public function testProperCustomServiceExtendsSet()
-	{
-		$this->markTestIncomplete();
-	}
 }

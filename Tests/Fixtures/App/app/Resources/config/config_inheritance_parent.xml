@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+>
+    <jlm-aws:config>         
+            <jlm-aws:services>
+               <jlm-aws:ec2 name="my_ec2">
+                <jlm-aws:client>
+                  <jlm-aws:request-options
+                      allow-redirects="false"
+                      save-to="/tmp"
+                      throw-exceptions="false"
+                      proxy="user:pass@proxy.com:80" >
+                    
+                    <jlm-aws:cert path="/my_cert"  />
+                    <jlm-aws:ssl-key path="/my__key" password="MY_PASSWORD" />
+
+                    <jlm-aws:header name="foo" value="bar" />
+                    <jlm-aws:header name="blah">bleh</jlm-aws:header>
+                    <jlm-aws:query-param name="foo" value="bar" />
+                    <jlm-aws:query-param name="blah">bleh</jlm-aws:query-param>
+                    <jlm-aws:cookie name="foo" value="bar" />
+                    <jlm-aws:cookie name="blah">bleh</jlm-aws:cookie>
+                    <jlm-aws:param name="foo" value="bar" />
+                    <jlm-aws:param name="blah">bleh</jlm-aws:param>
+
+                  </jlm-aws:request-options>
+                </jlm-aws:client>              
+              </jlm-aws:ec2>
+            </jlm-aws:services>
+    </jlm-aws:config>
+</container>
+
+

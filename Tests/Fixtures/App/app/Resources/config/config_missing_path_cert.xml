@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+>
+    <jlm-aws:config>    
+            <jlm-aws:default-settings>
+              <jlm-aws:client>  
+                <jlm-aws:request-options>
+                  <jlm-aws:cert password="nopath" />
+                </jlm-aws:request-options>
+              </jlm-aws:client>            
+            </jlm-aws:default-settings>     
+    </jlm-aws:config>
+</container>

@@ -383,7 +383,7 @@ class AwsConfigTranslator
 
             while($parentName != null) {
                 if (!isset($awsServiceConfig[$parentName])) {
-                    break;
+                    break; // We assume they are assuming something defined in the AWS-SDK default config
                 }
                 $parent = $awsServiceConfig[$parentName];
 
@@ -391,7 +391,7 @@ class AwsConfigTranslator
                     $parent['params'] = array();
                 }
 
-                $service['params'] = array_merge($parent['params'], $service['params']);
+                $service['params'] = array_replace_recursive($parent['params'], $service['params']);
 
                 if (!isset($service['class']) && isset($parent['class'])) {
                     $service['class'] = $parent['class'];
@@ -404,7 +404,7 @@ class AwsConfigTranslator
                 $parentName = $parentParentName;
             }
 
-            $service['params'] = array_merge($defaultSettings, $service['params']);
+            $service['params'] = array_replace_recursive($defaultSettings, $service['params']);
 
             if (empty($service['class'])) {
                 // Default to the service type class
@@ -414,4 +414,6 @@ class AwsConfigTranslator
 
         return $awsServiceConfig;
     }
+
+
 }
