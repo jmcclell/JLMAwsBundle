@@ -360,7 +360,7 @@ The configuration above would create a default S3 client and register its stream
 
 ```yaml
 jlm_aws:
-  s3_steram_wrapper: true
+  s3_stream_wrapper: true
   services:
     s3:
       default: ~
