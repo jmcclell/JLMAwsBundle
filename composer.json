@@ -31,6 +31,6 @@
         "satooshi/php-coveralls": "dev-master"
     },
     "suggest": {
-        "playbloom/guzzle-bundle": "Provides profiling and debug tooling integer for AWS service clients"
+        "playbloom/guzzle-bundle": "For profiling and debug tooling for AWS service clients"
     }
 }
