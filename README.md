@@ -246,9 +246,9 @@ jlm_aws:
         # ... #
 ```
 
-The general idea is that there are repeating blocks of service definitions keyed by service type and name. The first block is ```default_settings``` at the root level. These are global settings that all other services extend from (by default) and in many configurations i the only place where you'll need to add configuration such as credentials.
+The general idea is that there are repeating blocks of service definitions keyed by service type and name. The first block is ```default_settings``` at the root level. These are global settings that all other services extend from (by default) and in many configurations is the only place where you'll need to add configuration such as credentials.
 
-Below that under ```services``` is there you define all the services you wish to use. Directly below ```services``` is where you define the service type that you wish to configure. Under each service type, you may define one or more named services of that type. This allows you to have more than one S3 client, for example. Perhaps one for each region. You may optionally choose not to include any named services, but rater just set the value of the service type to ```true``` or ```null```. This will create a single default version of that service. 
+Below that under ```services``` is there you define all the services you wish to use. Directly below ```services``` is where you define the service type that you wish to configure. Under each service type, you may define one or more named services of that type. This allows you to have more than one S3 client, for example. Perhaps one for each region. You may optionally choose not to include any named services, but rather just set the value of the service type to ```true``` or ```null```. This will create a single default version of that service. 
 
 The configuraiton below would enable the default version of all available services:
 
@@ -303,7 +303,7 @@ $ app/console config:dump JLMAwsBundle
 
 There are two levels of inheritance at play with this bundle's configuration. The first is at the Symfony level. If you define a configuration for this bundle in a parent file (eg: config.yml) and then import that configuration file in a child file (eg: config_dev.yml), the child file may overwrite any configuration directives in the parent file.
 
-There is, however, a secondary level of inheritance at the AWS SDK/Guzzle level. By providing the ```extends``` attribute to a service instance, you can inherit the settings of another instance of that type. By default, ```default_settings``` is inherited, but you could chain several S3 instances together should you choose to do so.
+There is, however, a secondary level of inheritance at the AWS SDK/Guzzle level. By providing the ```extends``` attribute to a service instance, you can inherit the settings of another instance of that type. By default, ```default_settings``` is inherited, but you could chain several S3 instances, for example, together should you choose to do so.
 
 ```yaml
 jlm_aws:
