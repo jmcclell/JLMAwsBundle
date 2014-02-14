@@ -19,6 +19,8 @@ class JLMAwsExtensionTest extends WebTestCase
     }
 
     /**
+     * Config file does not ahve namespace schema location so we avoid xml errors (and instead test the config object)
+     * 
      * @dataProvider formatDataProvider
      * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      * @expectedExceptionMessage The child node "path" at path "jlm_aws.default_settings.client.request_options.ssl_key" must be configured.
@@ -29,6 +31,8 @@ class JLMAwsExtensionTest extends WebTestCase
     }
 
     /**
+     * Config file does not have namespace schema location so we avoid xml errors (and instead test the config object)
+     * 
      * @dataProvider formatDataProvider
      * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      * @expectedExceptionMessage The child node "path" at path "jlm_aws.default_settings.client.request_options.cert" must be configured.
@@ -37,6 +41,26 @@ class JLMAwsExtensionTest extends WebTestCase
     {
         $client = static::getClient('missing_path_cert_' . $format);
     }
+
+    /**
+     * @expectedException Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Unable to parse
+     */
+    public function testMissingPathInKeyXmlCheck()
+    {
+        $client = static::getClient('missing_path_key_xml_validation_xml');
+    }
+
+    /**
+     * @expectedException Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Unable to parse
+     */
+    public function testMissingPathInCertXmlCheck()
+    {
+        $client = static::getClient('missing_path_cert_xml_validation_xml');
+    }
+
+    
 
     /**
      * @dataProvider formatDataProvider
@@ -422,5 +446,16 @@ class JLMAwsExtensionTest extends WebTestCase
         $wrappers = stream_get_wrappers();
 
         $this->assertTrue(in_array('s3', $wrappers));
+    }
+
+    /**
+     * @dataProvider formatDataProvider
+     * @expectedException Exception
+     * @expectedExceptionMessage Configuration directive 's3_stream_wrapper' is set to 's3', but no S3 service is configured by that name.'
+     */
+    public function testS3StreamWrapperMissing($format)
+    {
+        $client = $this->getClient('s3_stream_wrapper_missing_' . $format);
+        $container = $client->getContainer();
     }
 }

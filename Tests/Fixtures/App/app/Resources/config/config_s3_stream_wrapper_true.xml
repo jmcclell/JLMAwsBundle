@@ -2,10 +2,12 @@
 
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+           xmlns:jlm-aws="http://jasonmcclellan.io/schema/dic/jlm-aws"
+           xsi:schemaLocation="http://jasonmcclellan.io/schema/dic/jlm-aws
+                http://jasonmcclellan.io/schema/dic/jlm-aws/jlm-aws-1.0.xsd"
 >
     <jlm-aws:config
-            s3_stream_wrapper="true"
+            s3-stream-wrapper="true"
         >
             <jlm-aws:default-settings>
                 <jlm-aws:credentials 
@@ -19,5 +21,3 @@
             </jlm-aws:services>
     </jlm-aws:config>
 </container>
-
-

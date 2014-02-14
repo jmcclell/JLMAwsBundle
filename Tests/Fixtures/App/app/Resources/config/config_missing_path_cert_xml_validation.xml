@@ -6,22 +6,13 @@
            xsi:schemaLocation="http://jasonmcclellan.io/schema/dic/jlm-aws
                 http://jasonmcclellan.io/schema/dic/jlm-aws/jlm-aws-1.0.xsd"
 >
-    <jlm-aws:config>
+    <jlm-aws:config>    
             <jlm-aws:default-settings>
-                <jlm-aws:credentials 
-                        key="MY_KEY"
-                        secret="MY_SECRET"
-                   />
-                <jlm-aws:endpoint
-                    region="us-east-1"
-                    scheme="https"
-
-                 />
-                <jlm-aws:client
-                    ssl-ca="true"
-                 />
-            </jlm-aws:default-settings>
+              <jlm-aws:client>  
+                <jlm-aws:request-options>
+                  <jlm-aws:cert password="nopath" />
+                </jlm-aws:request-options>
+              </jlm-aws:client>            
+            </jlm-aws:default-settings>     
     </jlm-aws:config>
 </container>
-
-

@@ -2,7 +2,9 @@
 
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xmlns:jlm-aws="http://symfony.com/schema/dic/jlm-aws"
+           xmlns:jlm-aws="http://jasonmcclellan.io/schema/dic/jlm-aws"
+           xsi:schemaLocation="http://jasonmcclellan.io/schema/dic/jlm-aws
+                http://jasonmcclellan.io/schema/dic/jlm-aws/jlm-aws-1.0.xsd"
 >
     <jlm-aws:config>    
             <jlm-aws:default-settings>
@@ -11,7 +13,7 @@
             <jlm-aws:services>
               <!-- Test Disabled -->
               <jlm-aws:autoscaling enabled="false"/>              
-              <jlm-aws:cloud-formation>false</jlm-aws:cloud-formation>
+              <jlm-aws:cloud-formation name="default">false</jlm-aws:cloud-formation>
 
               <!-- Test Auth Type -->
               <jlm-aws:cloud-front name="ntlm">

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns="http://jasonmcclellan.io/schema/dic/jlm-aws"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://jasonmcclellan.io/schema/dic/jlm-aws"
+    elementFormDefault="qualified">
+
+  
+    <xsd:element name="config" type="config" /> 
+
+    <xsd:complexType name="config">   
+        <xsd:all>              
+          <xsd:element name="default-settings" minOccurs="0" maxOccurs="1" type="default-settings-config" />
+          <xsd:element name="services" minOccurs="0" maxOccurs="1" type="service-list" />
+        </xsd:all>
+        <xsd:attribute name="service-prefix" type="xsd:string" />
+        <xsd:attribute name="aws-base-class" type="xsd:string" />
+        <xsd:attribute name="s3-stream-wrapper" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="default-settings-config">
+        <xsd:all>
+          <xsd:element name="credentials" minOccurs="0" maxOccurs="1" type="credentials" />
+          <xsd:element name="endpoint" minOccurs="0" maxOccurs="1" type="endpoint" />
+          <xsd:element name="client" minOccurs="0" maxOccurs="1" type="client" />
+        </xsd:all>
+    </xsd:complexType>
+
+    <xsd:complexType name="service-config" mixed="true">
+        <xsd:all>
+          <xsd:element name="credentials" minOccurs="0" maxOccurs="1" type="credentials" />
+          <xsd:element name="endpoint" minOccurs="0" maxOccurs="1" type="endpoint" />
+          <xsd:element name="client" minOccurs="0" maxOccurs="1" type="client" />
+        </xsd:all>
+        <xsd:attribute name="name" type="xsd:string" />
+        <xsd:attribute name="enabled" type="xsd:boolean" />
+        <xsd:attribute name="extends" type="xsd:string" />
+        <xsd:attribute name="class" type="xsd:string" />
+    </xsd:complexType>    
+
+    <xsd:complexType name="credentials">
+        <xsd:attribute name="key" type="xsd:string" />
+        <xsd:attribute name="secret" type="xsd:string" />
+        <xsd:attribute name="provider-service" type="xsd:string" />
+        <xsd:attribute name="cache-key" type="xsd:string" />
+        <xsd:attribute name="client-service" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="endpoint">
+        <xsd:all>
+          <xsd:element name="signature" minOccurs="0" maxOccurs="1" type="signature" />
+        </xsd:all>
+        <xsd:attribute name="region" type="xsd:string" />
+        <xsd:attribute name="scheme" type="xsd:string" />
+        <xsd:attribute name="base-url" type="xsd:string" />        
+    </xsd:complexType>
+
+    <xsd:complexType name="client">
+        <xsd:sequence>
+            <xsd:element name="request-options" minOccurs="0" maxOccurs="1" type="request-options" />
+            <xsd:sequence>                
+                <xsd:element name="curl-option" minOccurs="0" maxOccurs="unbounded" type="key-value" />
+                <xsd:element name="command-param" minOccurs="0" maxOccurs="unbounded" type="key-value" />                
+            </xsd:sequence>
+        </xsd:sequence>
+        <xsd:attribute name="ssl-ca" type="xsd:string" />
+        <xsd:attribute name="backoff-logger" type="xsd:string" />
+        <xsd:attribute name="backoff-logger-template" type="xsd:string" />        
+    </xsd:complexType>
+
+    <xsd:complexType name="key-value">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:string" />
+                <xsd:attribute name="value" type="xsd:string" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="signature">
+        <xsd:attribute name="version" type="signature-version" />
+        <xsd:attribute name="version_service" type="xsd:string" />
+        <xsd:attribute name="service" type="xsd:string" />
+        <xsd:attribute name="region" type="xsd:string" />
+    </xsd:complexType>
+
+
+    <xsd:simpleType name="signature-version">
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="v4"/>
+        <xsd:enumeration value="v3https"/>
+        <xsd:enumeration value="v2"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="request-options">  
+        <xsd:sequence>
+          <xsd:choice minOccurs="0" maxOccurs="unbounded">  
+            <xsd:element name="auth" minOccurs="0" maxOccurs="1" type="request-option-auth" />
+            <xsd:element name="cert" minOccurs="0" maxOccurs="1" type="key-with-password" />
+            <xsd:element name="ssl-key" minOccurs="0" maxOccurs="1" type="key-with-password" />                   
+            <xsd:element name="header" minOccurs="0" maxOccurs="unbounded" type="key-value" />
+            <xsd:element name="query-param" minOccurs="0" maxOccurs="unbounded" type="key-value" />
+            <xsd:element name="cookie" minOccurs="0" maxOccurs="unbounded" type="key-value" />            
+            <xsd:element name="param" minOccurs="0" maxOccurs="unbounded" type="key-value" />                
+          </xsd:choice> 
+        </xsd:sequence>
+        <xsd:attribute name="allow-redirects" type="xsd:boolean" />
+        <xsd:attribute name="save-to" type="xsd:string" />
+        <xsd:attribute name="throw-exceptions" type="xsd:boolean" />        
+        <xsd:attribute name="timeout" type="xsd:decimal" />
+        <xsd:attribute name="connect-timeout" type="xsd:decimal" />
+        <xsd:attribute name="verify" type="xsd:string" />
+        <xsd:attribute name="proxy" type="xsd:string" />
+        <xsd:attribute name="debug" type="xsd:boolean" />
+        <xsd:attribute name="stream" type="xsd:boolean" />        
+    </xsd:complexType>
+
+    <xsd:complexType name="key-with-password">
+        <xsd:attribute name="path" use="required" type="xsd:string" />
+        <xsd:attribute name="password" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="request-option-auth">
+        <xsd:attribute name="username" type="xsd:string" />
+        <xsd:attribute name="password" type="xsd:string" />
+        <xsd:attribute name="type" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:simpleType name="request-option-auth-type">
+      <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="basic"/>
+        <xsd:enumeration value="digest"/>
+        <xsd:enumeration value="ntlm"/>
+        <xsd:enumeration value="any"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="service-list">
+        <xsd:sequence>
+            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                <xsd:element name="autoscaling" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="cloud-formation" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="cloud-front" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="cloud-front-20120505" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="cloud-search" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="cloud-trail" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="cloud-watch" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="data-pipeline" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="direct-connect" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="dynamo-db" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="dynamo-db-20111205" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="ec2" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="elasticache" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="elastic-beanstalk" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="elastic-load-balancing" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="elastic-transcoder" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="emr" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="glacier" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="kinesis" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="iam" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="import-export" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="opsworks" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="rds" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="redshift" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="route53" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="s3" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="sdb" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="ses" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="sns" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="sqs" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="storage-gateway" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="sts" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="support" minOccurs="0" maxOccurs="unbounded" type="service-config" />
+                <xsd:element name="swf" minOccurs="0" maxOccurs="1" type="service-config" />
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

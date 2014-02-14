@@ -16,18 +16,17 @@ use JLM\AwsBundle\Aws\Common\Aws;
 
 
 /**
- * This is the class that loads and manages your bundle configuration
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
+ * JLMAwsExtension
+ * 
  */
 class JLMAwsExtension extends Extension
 {
-    const AWS_SERVICE_PREFIX = 'jlm_aws.'; // TODO: Make configurable
-    const BASE_CLASS = 'JLM\AwsBundle\Aws\Common\Aws'; // TODO: Make configurable
-
     private $baseClass = null;
     private $servicePrefix = null;
 
+    /**
+     * {@inheritDoc}
+     */
     public function getAlias()
     {
         return 'jlm_aws';
@@ -38,8 +37,11 @@ class JLMAwsExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {       
+        //die(json_encode($configs, JSON_PRETTY_PRINT));
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+
 
         $this->baseClass = $config['aws_base_class'];
 
@@ -85,6 +87,15 @@ class JLMAwsExtension extends Extension
         }
     }
 
+    /**
+     * Generates service definitions from AWS configuration array and adds them
+     * to the Container
+     * 
+     * @param  array            $awsConfig
+     * @param  ContainerBuilder $container
+     * 
+     * @return void
+     */
     private function generateServices(array $awsConfig, ContainerBuilder $container)
     {
         $awsConfig = $this->resolveServices($awsConfig);
@@ -105,14 +116,20 @@ class JLMAwsExtension extends Extension
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getXsdValidationBasePath()
     {
         return __DIR__.'/../Resources/config/schema';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getNamespace()
     {
-        return 'http://symfony.com/schema/dic/jlm-aws';
+        return 'http://jasonmcclellan.io/schema/dic/jlm-aws';
     }
 
      /**
