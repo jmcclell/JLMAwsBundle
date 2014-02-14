@@ -15,7 +15,7 @@ class JLMAwsExtensionTest extends WebTestCase
 
     public function formatDataProvider()
     {
-        return array(array('xml'), /*array('yml')*/);
+        return array(array('xml'), array('yml'));
     }
 
     /**

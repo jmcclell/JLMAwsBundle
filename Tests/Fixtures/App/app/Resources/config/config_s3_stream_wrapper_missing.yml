@@ -1,0 +1,6 @@
+jlm_aws:
+  s3_stream_wrapper: true
+  default_settings:
+    credentials:
+      key: MY_UNUSED_KEY
+      secret: MY_UNUSED_SECRET

@@ -131,6 +131,7 @@
                   </jlm-aws:request-options>
                 </jlm-aws:client>              
               </jlm-aws:data-pipeline>
+              <!--
               <jlm-aws:direct-connect />
               <jlm-aws:dynamo-db />
               <jlm-aws:dynamo-db-20111205 />
@@ -157,6 +158,7 @@
               <jlm-aws:sts />
               <jlm-aws:support />
               <jlm-aws:swf />
+            -->
             </jlm-aws:services>
     </jlm-aws:config>
 </container>

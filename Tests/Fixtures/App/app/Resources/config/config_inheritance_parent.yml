@@ -1,0 +1,28 @@
+
+jlm_aws:
+  services:
+    ec2:
+      my_ec2:
+        client:
+          request_options:
+            allow_redirects: false
+            save_to: /tmp
+            throw_exceptions: false
+            proxy: "user:pass@proxy.com:80"
+            cert:
+              path: /my_cert
+            ssl_key:
+              path: /my_key
+              password: MY_PASSWORD
+            headers:
+              foo: bar
+              blah: bleh
+            query_params:
+              foo: bar
+              blah: bleh
+            cookies:
+              foo: bar
+              blah: bleh
+            params:
+              foo: bar
+              blah: bleh

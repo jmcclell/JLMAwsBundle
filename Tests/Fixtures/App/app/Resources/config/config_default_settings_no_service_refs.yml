@@ -1,0 +1,10 @@
+jlm_aws:
+  default_settings:
+    credentials:
+      key: MY_KEY
+      secret: MY_SECRET
+    endpoint:
+      region: us-east-1
+      scheme: https
+    client:
+      ssl_ca: true

@@ -1,0 +1,71 @@
+jlm_aws:
+  services:
+    autoscaling:
+      my_autoscaling: ~              
+    cloud_formation:
+      my_cloud_formation: ~
+    cloud_front:
+      my_cloud_front: ~
+    cloud_front_20120505:
+      my_cloud_front_20120505: ~
+    cloud_search:
+      my_cloud_search: ~
+    cloud_trail:
+      my_cloud_trail: ~
+    cloud_watch:
+      my_cloud_watch: ~
+    data_pipeline:
+      my_data_pipeline: ~
+    direct_connect:
+      my_direct_connect: ~
+    dynamo_db:
+      my_dynamo_db: ~
+    dynamo_db_20111205:
+      my_dynamo_db_20111205: ~
+    ec2:
+      my_ec2: ~
+    elasticache:
+      my_elasticache: ~
+    elastic_beanstalk:
+      my_elastic_beanstalk: ~
+    elastic_load_balancing:
+      my_elastic_load_balancing: ~
+    elastic_transcoder:
+      my_elastic_transcoder: ~
+    emr:
+      my_emr: ~
+    glacier:
+      my_glacier: ~
+    kinesis:
+      my_kinesis: ~
+    iam:
+      my_iam: ~
+    import_export:
+      my_import_export: ~
+    opsworks:
+      my_opsworks: ~
+    rds:
+      my_rds: ~
+    redshift:
+      my_redshift: ~
+    route53:
+      my_route53: ~
+    s3:
+      my_s3: ~
+    sdb:
+      my_sdb: ~
+    ses:
+      my_ses: ~
+    sns:
+      my_sns: ~
+    sqs:
+      my_sqs: ~
+    storage_gateway:
+      my_storage_gateway: ~
+    sts:
+      my_sts: ~
+    support:
+      my_support: ~
+    swf:
+      my_swf: ~
+

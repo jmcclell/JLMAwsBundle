@@ -1,0 +1,12 @@
+services:
+  jlm_aws.signature_provider:
+    class: JLM\AwsBundle\Tests\Fixtures\MockService\SignatureProvider
+
+jlm_aws:
+  default_settings:
+    endpoint:
+      signature:
+        version: v4
+        version_service: @jlm_aws.signature_provider
+        service: MY_SERVICE
+        region: MY_REGION

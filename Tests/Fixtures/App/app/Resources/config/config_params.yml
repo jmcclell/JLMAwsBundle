@@ -1,0 +1,130 @@
+jlm_aws:
+  default_settings:
+    endpoint:
+      region: us-east-1
+  services:
+    autoscaling: false
+
+    cloud_formation: false
+
+    cloud_front:
+      ntlm:
+        client:
+          request_options:
+            auth:
+              username: user
+              password: pass
+              type: ntlm
+      basic:
+        client:
+          request_options:
+            auth:
+              username: user
+              password: pass
+              type: basic
+
+    cloud_search:
+      custom_request_options:
+        client:
+          request_options:
+            allow_redirects: true
+            save_to: /tmp
+            throw_exceptions: true
+            connect_timeout: 1.5
+            timeout: 2
+            verify: false
+            proxy: "http://username:password@host:80"
+            debug: true
+            stream: true
+            cert:
+              path: /my_cert
+              password: MY_PASSWORD
+            ssl_key:
+              path: /my_key
+              password: MY_PASSWORD
+            headers:
+              foo: bar
+              blah: bleh
+            query_params:
+              foo: bar
+              blah: bleh
+            cookies:
+              foo: bar
+              blah: bleh
+            params:
+              foo: bar
+              blah: bleh
+
+    cloud_trail:
+      alias: ~
+
+    cloud_watch:
+      parent:
+        class: JLM\AwsBundle\Tests\Fixtures\MockService\MyCloudWatch\MyCloudWatchClient
+        credentials:
+          key: PARENT_KEY
+          secret: PARENT_SECRET
+
+      child:
+        extends: parent
+        credentials:
+          key: CHILD_KEY
+
+    data_pipeline:
+      request_options_parent:
+        client:
+          request_options:
+            allow_redirects: true
+            save_to: /tmp
+            throw_exceptions: true
+            connect_timeout: 1.5
+            timeout: 2
+            verify: false
+            proxy: "http://username:password@host:80"
+            debug: true
+            stream: true
+            cert:
+              path: /my_cert
+              password: MY_PASSWORD
+            ssl_key:
+              path: /my_key
+              password: MY_PASSWORD
+            headers:
+              foo: bar
+              blah: bleh
+            query_params:
+              foo: bar
+              blah: bleh
+            cookies:
+              foo: bar
+              blah: bleh
+            params:
+              foo: bar
+              blah: bleh
+
+      request_options_child:
+        extends: request_options_parent
+        client:
+          request_options:
+            allow_redirects: false
+            save_to: /tmp_child
+            throw_exceptions: false
+            proxy: ~
+            cert:
+              path: /my_child_cert
+            ssl_key:
+              path: /my_child_key
+              password: MY_CHILD_PASSWORD
+            headers:
+              foo: child_bar
+              child_only: child_value
+            query_params:
+              foo: child_bar
+              child_only: child_value
+            cookies:
+              foo: child_bar
+              child_only: child_value
+            params:
+              foo: child_bar
+              child_only: child_value
+

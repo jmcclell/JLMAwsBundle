@@ -1,0 +1,28 @@
+imports:
+  - { resource: config_inheritance_parent.yml }
+
+jlm_aws:
+  services:
+    ec2:
+      my_ec2:
+        client:
+          request_options:
+            allow_redirects: true
+            save_to: /tmp_override
+            cert:
+              path: /my_override_cert
+            ssl_key:
+              path: /my_override_key
+              password: MY_OVERRIDE_PASSWORD
+            headers:
+              foo: override_bar
+              override_only: override_value
+            query_params:
+             foo: override_bar
+             override_only: override_value
+            cookies:
+              foo: override_bar
+              override_only: override_value
+            params:
+              foo: override_bar
+              override_only: override_value

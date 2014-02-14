@@ -1,0 +1,36 @@
+jlm_aws:
+  services:
+    autoscaling: ~              
+    cloud_formation: ~
+    cloud_front: ~
+    cloud_front_20120505: ~
+    cloud_search: ~
+    cloud_trail: ~
+    cloud_watch: ~
+    data_pipeline: ~
+    direct_connect: ~
+    dynamo_db: ~
+    dynamo_db_20111205: ~
+    ec2: ~
+    elasticache: ~
+    elastic_beanstalk: ~
+    elastic_load_balancing: ~
+    elastic_transcoder: ~
+    emr: ~
+    glacier: ~
+    kinesis: ~
+    iam: ~
+    import_export: ~
+    opsworks: ~
+    rds: ~
+    redshift: ~
+    route53: ~
+    s3: ~
+    sdb: ~
+    ses: ~
+    sns: ~
+    sqs: ~
+    storage_gateway: ~
+    sts: ~
+    support: ~
+    swf: ~

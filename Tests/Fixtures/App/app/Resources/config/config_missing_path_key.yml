@@ -1,0 +1,6 @@
+jlm_aws:
+  default_settings:
+    client:
+      request_options:
+        ssl_key:
+          password: nopath
