@@ -29,5 +29,8 @@
         "symfony/finder": "~2.1",
         "symfony/browser-kit": "~2.1",
         "satooshi/php-coveralls": "dev-master"
+    },
+    "suggest": {
+        "playbloom/guzzle-bundle": "Provides profiling and debug tooling integer for AWS service clients"
     }
 }
