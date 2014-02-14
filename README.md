@@ -9,3 +9,7 @@
 **Note:** Not ready for production usage yet. Still under heavy development. Use at your own risk.
 
 # JLMAwsBundle
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jmcclell/jlmawsbundle/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
