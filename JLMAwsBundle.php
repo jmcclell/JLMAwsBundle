@@ -6,6 +6,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\Resource\FileResource;
 
+use JLM\AwsBundle\DependencyInjection\Compiler\S3WrapperCompilerPass;
+
 class JLMAwsBundle extends Bundle
 {
 	public function build(ContainerBuilder $container)
@@ -19,5 +21,14 @@ class JLMAwsBundle extends Bundle
 		 * cache.
 		 */
 		$container->addResource(new FileResource(__DIR__ . '/Config/AwsConfigTranslator.php'));
+	}
+
+	public function boot()
+	{
+		$container = $this->container;
+		if ($container->has('jlm_aws.s3_stream_wrapper_service')) {
+			$s3 = $container->get('jlm_aws.s3_stream_wrapper_service');
+			$s3->registerStreamWrapper();
+		}
 	}
 }

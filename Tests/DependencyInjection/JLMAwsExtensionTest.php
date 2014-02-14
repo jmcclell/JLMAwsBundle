@@ -405,7 +405,7 @@ class JLMAwsExtensionTest extends WebTestCase
     {
         $client = $this->getClient('s3_stream_wrapper_true_' . $format);
         $container = $client->getContainer();
-
+        $this->assertTrue($container->has('jlm_aws.s3_stream_wrapper_service'));
         $wrappers = stream_get_wrappers();
         $this->assertTrue(in_array('s3', $wrappers));
     }
@@ -417,6 +417,7 @@ class JLMAwsExtensionTest extends WebTestCase
     {
         $client = $this->getClient('s3_stream_wrapper_named_' . $format);
         $container = $client->getContainer();
+        $this->assertTrue($container->has('jlm_aws.s3_stream_wrapper_service'));
 
         $wrappers = stream_get_wrappers();
 

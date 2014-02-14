@@ -44,20 +44,28 @@ class JLMAwsExtension extends Extension
         $this->baseClass = $config['aws_base_class'];
 
         $this->servicePrefix = $config['service_prefix'];
+
         if (!empty($this->servicePrefix)) {
             $this->servicePrefix .= '.';
         }
 
-        
         $awsConfigTranslator = new AwsConfigTranslator();
         $awsConfig = $awsConfigTranslator->translateConfigToAwsConfig($config);
 
         $this->generateServices($awsConfig, $container);
 
-        $this->registerS3StreamWrapper($config, $container);        
+        $this->registerS3StreamWrapperAlias($config, $container);        
     }
 
-    private function registerS3StreamWrapper(array $config, ContainerBuilder $container)
+    /**
+     * Checks to see if an S3 stream wrapper service has been set. If so, it aliases it to be picked up
+     * by a compiler pass later on to register the S3 stream wrapper.
+     * 
+     * @param  array            $config    
+     * @param  ContainerBuilder $container [description]
+     * @return [type]                      [description]
+     */
+    private function registerS3StreamWrapperAlias(array $config, ContainerBuilder $container)
     {
         $s3StreamWrapper = $config['s3_stream_wrapper'];
         if(!empty($s3StreamWrapper)) {
@@ -67,13 +75,13 @@ class JLMAwsExtension extends Extension
                 $s3StreamWrapper = 's3.' . $s3StreamWrapper;
             }
 
-            $s3 = $container->get($this->servicePrefix . $s3StreamWrapper, ContainerInterface::IGNORE_ON_INVALID_REFERENCE);
+            $wrapperService = $this->servicePrefix . $s3StreamWrapper;
 
-            if ($s3 == null) {
+            if ($container->has($wrapperService)) {
+                $container->setAlias('jlm_aws.s3_stream_wrapper_service', $wrapperService);
+            } else {
                 throw new \Exception("Configuration directive 's3_stream_wrapper' is set to '$s3StreamWrapper', but no S3 service is configured by that name.'");
-            }
-
-            $s3->registerStreamWrapper();
+            }            
         }
     }
 
