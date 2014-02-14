@@ -112,6 +112,9 @@ class JLMAwsExtension extends Extension
             $definition = new Definition($serviceConfig['class'], array($service));
             $definition->setFactoryService($this->servicePrefix . 'aws');
             $definition->setFactoryMethod('get');
+            $definition->addTag('jlm_aws.' . $service);
+            $definition->addTag('jlm_aws.aws_service_client');
+            $definition->addTag('playbloom_guzzle.client'); // Integrate with ludofleury/GuzzleBundle if it's enabled
             $container->setDefinition($this->servicePrefix . $service, $definition);       
         }
     }
