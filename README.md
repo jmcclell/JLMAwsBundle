@@ -291,7 +291,7 @@ jlm_aws:
     swf: ~
 ```
 
-Each instance of a service type as well as ```default_settings``` has the exact same child options, including ```credentials```, ```endpoint```, and ```client```.
+Each instance of a service type (including ```default_settings```) has the exact same child options, including ```credentials```, ```endpoint```, and ```client```.
 
 To see a full configuration from within your app, run:
 
@@ -301,9 +301,9 @@ $ app/console config:dump JLMAwsBundle
 
 ## Configuration Inheritance
 
-There are two levels of inheritance at play with this bundle's configuration. The first is at the Symfony level. If you define a configuration for this bundle in a parent file (eg: config.yml) and then import that configuration file in a child file (eg: config_dev.yml), the child file may overwrite any configuration directives in the parent file.
+There are two levels of inheritance at play with this bundle's configuration. The first is at the Symfony level. If you define a configuration for this bundle in a parent file (eg: ```config.yml```) and then import that configuration file in a child file (eg: ```config_dev.yml```), the child file may overwrite any configuration directives in the parent file.
 
-There is, however, a secondary level of inheritance at the AWS SDK/Guzzle level. By providing the ```extends``` attribute to a service instance, you can inherit the settings of another instance of that type. By default, ```default_settings``` is inherited, but you could chain several S3 instances, for example, together should you choose to do so.
+There is, however, a secondary level of inheritance at the AWS SDK/Guzzle level. By providing the ```extends``` attribute to a service instance, you can inherit the settings of another instance of the same type. By default, ```default_settings``` is inherited by all types, but you could chain several S3 instances, for example, together should you choose to do so.
 
 ```yaml
 jlm_aws:
@@ -335,17 +335,16 @@ The above configuration would create 3 S3 services in the container:
 - ```jlm_aws.s3```
 - ```jlm_aws.s3.s3_west```
 - ```jlm_aws.s3.s3_west_readonly```
-- 
 
-The first would have a region of ```us-east-1```inherited from ```default_settings``` but use its own ```key``` and ```secret``` values. The second would use the same as the first except it would override the region to be ```us-west-1```. Finally, the 3rd would be the same as the 2nd except it would use different credentials.
+The first would have a region of ```us-east-1```inherited from ```default_settings``` but use its own ```key``` and ```secret``` values. The second would be the same as the first except it would override the region to be ```us-west-1```. Finally, the 3rd would be the same as the 2nd except it would use different credentials.
 
 This can be pretty powerful, but in most cases the configuration will be much simpler than what it is capable of.
 
 ## S3 Wrapper
 
-The AWS SDK provides an [S3 Wrapper](http://docs.aws.amazon.com/aws-sdk-php/guide/latest/feature-s3-stream-wrapper.html). We can automatically register a particular S3 service instance's stream wrapper by providing the ```s3_stream_wrapper``` configuration option to ```jlm_aws```. This configuraiton option accepts either a ```true|false``` value or the the name of an S3 instance that you wish to use for the stream.
+The AWS SDK provides an [S3 Wrapper](http://docs.aws.amazon.com/aws-sdk-php/guide/latest/feature-s3-stream-wrapper.html). We can automatically register a particular S3 service instance's stream wrapper by providing the ```s3_stream_wrapper``` configuration option to ```jlm_aws```. This configuraiton option accepts either a ```true|false``` value or the the name of an S3 instance that you wish to use for the stream. If ```true``` is given, it will assume you wish to use the unnamed default S3 service instance.
 
-Only one service can register the stream, so if you have multiple services you won't be able to register multiple streams. You could do it at runtime by unreigstering a previous stream, getting an instance of the S3 client you want, and then re-registering the stream with that instance. Obviously we cannot facilitate that in this configuration bundle, however.
+Only one S3 instane can register the stream, so if you have multiple S3 service instances you won't be able to register multiple streams. You could do it at runtime by unreigstering a previous stream, getting an instance of the S3 client you want, and then re-registering the stream with that instance. Obviously we cannot facilitate that at configuration time, however.
 
 ```yaml
 jlm_aws:
@@ -356,14 +355,14 @@ jlm_aws:
 
 The configuration above would create a default S3 client and register its stream wrapper.
 
-**Important:** You must enable the S3 default service if you choose to use a value of ```true``` for ```s3_stream_wrapper``` as we did above by adding ```s3: ~``` to the config. You could also enable it via:
+**Important:** You *must* enable the S3 default service if you choose to use a value of ```true``` for ```s3_stream_wrapper``` as we did above by adding ```s3: ~``` to the config. You could also enable it via:
 
 ```yaml
 jlm_aws:
   s3_stream_wrapper: true
   services:
     s3:
-      default: ~
+      default: ~ # true would also be acceptable
 ```
 
 The above two configurations are equivalent. Likewise, if you choose to use a named instance, that instance must be registered under the S3 services configuration.
